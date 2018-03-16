@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Android_Project</string>
+    <string name="nameTextView">Name: </string>
+    <string name="dateCreatedTextView">Date Created: </string>
+    <string name="descriptionTextView">Description: </string>
+    <string name="ingredientsTextView">Ingredients: </string>
+    <string name="instructionsTextView">Instructions: </string>
+    <string name="imageTextView">Upload Image: </string>
+    <string name="createButton">Create </string>
+    <string name="editButton">Edit </string>
+    <string name="deleteButton">Delete </string>
+</resources>
