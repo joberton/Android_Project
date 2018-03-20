@@ -2,6 +2,7 @@ package com.example.android_project;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.graphics.Bitmap;
 import android.util.ArrayMap;
@@ -40,7 +41,8 @@ public class Recipe {
     @ColumnInfo(name = "instructions")
     private String instructions;
 
-    //private Bitmap image;
+    @Ignore
+    private Bitmap image;
 
     public Recipe(String name, String dateCreated, String recipeIngredients, String description, String instructions)
     {

@@ -2,6 +2,7 @@ package com.example.android_project;
 
 import android.arch.persistence.room.Room;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -24,7 +25,7 @@ public class NewRecipeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_recipe);
 
-        db = Room.databaseBuilder(getApplicationContext(),AppDatabase.class,"test-database").allowMainThreadQueries().build();
+        db = AppDatabase.getDatabaseContext(this);
 
         drinkName = findViewById(R.id.newRecipeName);
         drinkDescription = findViewById(R.id.newRecipeDescription);
@@ -42,11 +43,29 @@ public class NewRecipeActivity extends AppCompatActivity {
                                               getViewString(ingredientsData.getId()),
                                               getViewString(drinkDescription.getId()),
                                               getViewString(drinkInstructions.getId()));
-                db.recipeDao().insertAll(newRecipe);
-                startActivity(new Intent(getApplicationContext(),MainActivity.class));
-                finish();
+                newRecipeAsyncTask newRecipeTask = new newRecipeAsyncTask(newRecipe);
+                newRecipeTask.execute();
             }
         });
+    }
+
+    private class newRecipeAsyncTask extends AsyncTask<Void,Void,Void>
+    {
+        Recipe newRecipe;
+
+        public newRecipeAsyncTask(Recipe newRecipe)
+        {
+            this.newRecipe = newRecipe;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids)
+        {
+            db.recipeDao().insertAll(newRecipe);
+            startActivity(new Intent(getApplicationContext(),MainActivity.class));
+            finish();
+            return null;
+        }
     }
 
     private String getViewString(int id)

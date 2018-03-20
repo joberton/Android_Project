@@ -22,7 +22,12 @@
         <activity
             android:name=".NewRecipeActivity"
             android:parentActivityName=".MainActivity" />
-        <activity android:name=".SettingsActivity" android:parentActivityName=".MainActivity"></activity>
+        <activity
+            android:name=".SettingsActivity"
+            android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".UpdateRecipeActivity"
+            android:parentActivityName=".MainActivity"/>
     </application>
 
 </manifest>

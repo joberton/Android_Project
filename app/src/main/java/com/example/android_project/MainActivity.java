@@ -1,8 +1,11 @@
 package com.example.android_project;
 
+import android.app.IntentService;
 import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentSender;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -34,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        db = Room.databaseBuilder(getApplicationContext(),AppDatabase.class,"test-database").allowMainThreadQueries().build();
+        db = AppDatabase.getDatabaseContext(this);
 
         list = findViewById(R.id.list);
 
@@ -44,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
                 Recipe selectedRecipe = (Recipe) adapterView.getItemAtPosition(i);
                 Intent data = new Intent(getApplicationContext(),RecipeDetailsActivity.class);
 
+                data.putExtra("id",selectedRecipe.getRecipeId());
                 data.putExtra("name",selectedRecipe.getName());
                 data.putExtra("ingredients",selectedRecipe.getRecipeIngredients());
                 data.putExtra("description",selectedRecipe.getDescription());
@@ -53,26 +57,21 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        recipes.addAll(db.recipeDao().getAll());
-
         recipeAdapter = new RecipeAdapter(getApplicationContext(),R.layout.recipes,recipes);
-        list.setAdapter(recipeAdapter);
 
+        populateListViewThread newThread = new populateListViewThread();
+        newThread.execute();
     }
 
-    /*private List<HashMap<String,String>> createKeyMapForRecipeIngredients(String[][] data)
+    private class populateListViewThread extends AsyncTask<Void,Void,Void>
     {
-        final String[] keys = {"ingredient","measurement"};
-        List<HashMap<String,String>> ingredientsData = new ArrayList();
-        for(int i = 0; i < data.length; i++) {
-            HashMap<String,String> ingredient = new HashMap();
-            for(int inner = 0; inner < data[i].length; inner++) {
-                ingredient.put(keys[inner],data[i][inner]);
-            }
-            ingredientsData.add(ingredient);
+        @Override
+        protected Void doInBackground(Void... voids) {
+            recipes.addAll(db.recipeDao().getAll());
+            list.setAdapter(recipeAdapter);
+            return null;
         }
-        return ingredientsData;
-    }*/
+    }
 
     private class RecipeAdapter extends ArrayAdapter<Recipe>
     {
@@ -103,8 +102,8 @@ public class MainActivity extends AppCompatActivity {
             dateCreated = view.findViewById(R.id.dateCreated);
 
             name.setText(i.getName());
-            description.setText("Description: " + i.getDescription());
-            dateCreated.setText("Date Created: " + i.getDateCreated());
+            description.setText(getString(R.string.descriptionTextView) + i.getDescription());
+            dateCreated.setText(getString(R.string.dateCreatedTextView) + i.getDateCreated());
             return view;
         }
     }
