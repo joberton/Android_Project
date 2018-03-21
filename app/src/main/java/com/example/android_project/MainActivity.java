@@ -1,11 +1,11 @@
 package com.example.android_project;
 
-import android.app.IntentService;
-import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentSender;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -17,13 +17,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -61,6 +60,12 @@ public class MainActivity extends AppCompatActivity {
 
         populateListViewThread newThread = new populateListViewThread();
         newThread.execute();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        db.close();
     }
 
     private class populateListViewThread extends AsyncTask<Void,Void,Void>

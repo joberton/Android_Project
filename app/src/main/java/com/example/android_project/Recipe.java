@@ -21,7 +21,7 @@ import java.util.List;
  */
 
 @Entity
-public class Recipe {
+public class Recipe implements Comparable<Recipe>{
 
     @PrimaryKey(autoGenerate = true)
     private int recipeId;
@@ -111,5 +111,11 @@ public class Recipe {
     public void setDateCreated(String dateCreated)
     {
         this.dateCreated = dateCreated;
+    }
+
+    //for sorting functionality later on
+    public int compareTo(Recipe recipe)
+    {
+        return this.name.compareTo(recipe.getName());
     }
 }

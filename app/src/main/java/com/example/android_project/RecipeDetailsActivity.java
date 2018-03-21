@@ -48,6 +48,7 @@ public class RecipeDetailsActivity extends AppCompatActivity {
                     Intent currentRecipeData = new Intent(getApplicationContext(),UpdateRecipeActivity.class);
                     currentRecipeData.putExtras(new Bundle(data.getExtras()));
                     startActivity(currentRecipeData);
+                    finish();
                 }
             }
         };
@@ -61,10 +62,16 @@ public class RecipeDetailsActivity extends AppCompatActivity {
         super.onStart();
 
         name.setText(data.getStringExtra("name"));
-        description.setText(getString(R.string.descriptionTextView) + data.getStringExtra("description"));
-        dateCreated.setText(getString(R.string.dateCreatedTextView) + data.getStringExtra("dateCreated"));
-        ingredients.setText(getString(R.string.ingredientsTextView) + data.getStringExtra("ingredients"));
-        instructions.setText(getString(R.string.instructionsTextView) + data.getStringExtra("instructions"));
+        description.setText(getString(R.string.descriptionTextView).concat(data.getStringExtra("description")));
+        dateCreated.setText(getString(R.string.dateCreatedTextView).concat(data.getStringExtra("dateCreated")));
+        ingredients.setText(getString(R.string.ingredientsTextView).concat(data.getStringExtra("ingredients")));
+        instructions.setText(getString(R.string.instructionsTextView).concat(data.getStringExtra("instructions")));
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        db.close();
     }
 
 

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Layout;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -26,7 +27,7 @@ public class UpdateRecipeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_recipe);
 
-        action = getString(R.string.updateButton);
+        action = getString(R.string.updateView);
 
         db = AppDatabase.getDatabaseContext(this);
         data = getIntent();
@@ -60,6 +61,12 @@ public class UpdateRecipeActivity extends AppCompatActivity {
         ingredientsData.setText(data.getStringExtra("ingredients"));
         dateCreated.setText(data.getStringExtra("dateCreated"));
         drinkInstructions.setText(data.getStringExtra("instructions"));
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        db.close();
     }
 
     private String getViewString(int id)

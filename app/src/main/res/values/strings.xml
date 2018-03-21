@@ -6,8 +6,8 @@
     <string name="ingredientsTextView">Ingredients: </string>
     <string name="instructionsTextView">Instructions: </string>
     <string name="imageTextView">Upload Image: </string>
-    <string name="updateButton">Update </string>
-    <string name="createButton">Create </string>
+    <string name="updateView">Update Recipe</string>
+    <string name="createView">New Recipe</string>
     <string name="editButton">Edit </string>
     <string name="deleteButton">Delete </string>
 </resources>
