@@ -2,28 +2,26 @@ package com.example.android_project;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
+import android.arch.persistence.room.TypeConverter;
 import android.graphics.Bitmap;
-import android.util.ArrayMap;
+import android.support.annotation.NonNull;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created by johno on 3/13/2018.
  */
 
-@Entity
+@Entity(foreignKeys = @ForeignKey(entity = Category.class,
+        parentColumns = "id",
+        childColumns = "categoryId"))
 public class Recipe implements Comparable<Recipe>{
 
     @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "id")
     private int recipeId;
 
     @ColumnInfo(name = "name")
@@ -41,16 +39,21 @@ public class Recipe implements Comparable<Recipe>{
     @ColumnInfo(name = "instructions")
     private String instructions;
 
-    @Ignore
-    private Bitmap image;
+    @ColumnInfo(name = "image_path")
+    private String imagePath;
 
-    public Recipe(String name, String dateCreated, String recipeIngredients, String description, String instructions)
+    @ColumnInfo(name = "categoryId")
+    private int categoryId;
+
+    public Recipe(String name, String dateCreated, String recipeIngredients, String description, String instructions, String imagePath, int categoryId)
     {
         this.name = name;
         this.dateCreated = dateCreated;
         this.recipeIngredients = recipeIngredients;
         this.description = description;
         this.instructions = instructions;
+        this.imagePath = imagePath;
+        this.categoryId = categoryId;
     }
 
     public int getRecipeId()
@@ -111,6 +114,26 @@ public class Recipe implements Comparable<Recipe>{
     public void setDateCreated(String dateCreated)
     {
         this.dateCreated = dateCreated;
+    }
+
+    public String getImagePath()
+    {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath)
+    {
+        this.imagePath = imagePath;
+    }
+
+    public int getCategoryId()
+    {
+        return categoryId;
+    }
+
+    public void setCategoryId(int categoryId)
+    {
+        this.categoryId = categoryId;
     }
 
     //for sorting functionality later on

@@ -17,7 +17,7 @@ public interface RecipeDao {
     @Query("Select * FROM recipe")
     List<Recipe> getAll();
 
-    @Query("Select * FROM recipe WHERE recipeId = :id")
+    @Query("Select * FROM recipe WHERE id = :id")
     Recipe findRecipe(int id);
 
     @Update

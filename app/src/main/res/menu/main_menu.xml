@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/settings"
-          android:title="Change Settings?"/>
-    <item android:id="@+id/newRecipe"
-          android:title="New Recipe?"/>
+    <item android:id="@+id/settings" android:title="@string/applicationSettings"/>
+    <item android:id="@+id/newRecipe" android:title="@string/createView"/>
 </menu>

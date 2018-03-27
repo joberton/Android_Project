@@ -1,8 +1,10 @@
 package com.example.android_project;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
@@ -21,7 +23,14 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -52,28 +61,28 @@ public class MainActivity extends AppCompatActivity {
                 data.putExtra("description",selectedRecipe.getDescription());
                 data.putExtra("dateCreated",selectedRecipe.getDateCreated());
                 data.putExtra("instructions",selectedRecipe.getInstructions());
+                data.putExtra("categoryId", selectedRecipe.getCategoryId());
+
                 startActivity(data);
             }
         });
 
         recipeAdapter = new RecipeAdapter(getApplicationContext(),R.layout.recipes,recipes);
 
-        populateListViewThread newThread = new populateListViewThread();
-        newThread.execute();
+        new PopulateListViewThread().execute();
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        db.close();
-    }
-
-    private class populateListViewThread extends AsyncTask<Void,Void,Void>
+    private class PopulateListViewThread extends AsyncTask<Void,Void,Void>
     {
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            list.setAdapter(recipeAdapter);
+            super.onPostExecute(aVoid);
+        }
+
         @Override
         protected Void doInBackground(Void... voids) {
             recipes.addAll(db.recipeDao().getAll());
-            list.setAdapter(recipeAdapter);
             return null;
         }
     }
@@ -94,7 +103,9 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
             TextView name,description,dateCreated;
+            ImageView image;
             View view = convertView;
+
             if(view == null)
             {
                 LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -102,13 +113,17 @@ public class MainActivity extends AppCompatActivity {
             }
             Recipe i = recipes.get(position);
 
+            image = view.findViewById(R.id.drinkImage);
             name = view.findViewById(R.id.name);
             description = view.findViewById(R.id.description);
             dateCreated = view.findViewById(R.id.dateCreated);
 
+            //image.setImageURI(Uri.parse(i.getImagePath()));
+            //image.setImageBitmap(Bitmap.createScaledBitmap(BitmapFactory.decodeFile(i.getImagePath()), 120, 120, false));
+
             name.setText(i.getName());
-            description.setText(getString(R.string.descriptionTextView) + i.getDescription());
-            dateCreated.setText(getString(R.string.dateCreatedTextView) + i.getDateCreated());
+            description.setText(getString(R.string.descriptionTextView).concat(i.getDescription()));
+            dateCreated.setText(getString(R.string.dateCreatedTextView).concat(i.getDateCreated().toString()));
             return view;
         }
     }
