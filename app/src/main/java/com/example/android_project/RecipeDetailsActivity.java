@@ -50,6 +50,7 @@ public class RecipeDetailsActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Intent reviewData;
         switch (item.getItemId())
         {
             case R.id.updateRecipe:
@@ -65,7 +66,14 @@ public class RecipeDetailsActivity extends AppCompatActivity {
                 startActivity(new Intent(getApplicationContext(),SettingsActivity.class));
                 break;
             case R.id.review:
-                startActivity(new Intent(getApplicationContext(), NewReviewActivity.class));
+                reviewData = new Intent(getApplicationContext(), NewReviewActivity.class);
+                reviewData.putExtra("id",data.getIntExtra("id",0));
+                startActivity(reviewData);
+                break;
+            case R.id.allReviews:
+                reviewData = new Intent(getApplicationContext(), ReviewsActivity.class);
+                reviewData.putExtra("id",data.getIntExtra("id",0));
+                startActivity(reviewData);
                 break;
             case android.R.id.home:
                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
@@ -79,7 +87,6 @@ public class RecipeDetailsActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.recipe_details_menu,menu);
         return super.onCreateOptionsMenu(menu);
     }
-
 
     private class DeleteRecipeTask extends AsyncTask<Void,Void,Void>
     {

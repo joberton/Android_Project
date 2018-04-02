@@ -11,7 +11,7 @@ import android.support.annotation.NonNull;
 /**
  * Created by johno on 3/20/2018.
  */
-@Database(entities = {Recipe.class,Category.class,Favorite.class}, version = 4)
+@Database(entities = {Recipe.class,Category.class,Favorite.class}, version = 5)
 public abstract class AppDatabase extends RoomDatabase{
 
     private static AppDatabase databaseInstance;
@@ -23,7 +23,7 @@ public abstract class AppDatabase extends RoomDatabase{
     {
         if(databaseInstance == null)
         {
-            databaseInstance = Room.databaseBuilder(context,AppDatabase.class,"test-database").addMigrations(MIGRATION_1_2,MIGRATION_2_3,MIGRATION_3_4).build();
+            databaseInstance = Room.databaseBuilder(context,AppDatabase.class,"test-database").addMigrations(MIGRATION_1_2,MIGRATION_2_3,MIGRATION_3_4,MIGRATION_4_5).build();
         }
         return databaseInstance;
     }
@@ -59,6 +59,13 @@ public abstract class AppDatabase extends RoomDatabase{
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
             //dropped my entire schema and recreated it to avoid headaches
+        }
+    };
+
+    static final Migration MIGRATION_4_5 = new Migration(4,5) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("ALTER TABLE Favorite " + " ADD COLUMN reviewName TEXT");
         }
     };
 }

@@ -14,4 +14,8 @@
     <string name="editButton">Edit </string>
     <string name="deleteButton">Delete </string>
     <string name="writeReview">Write Review </string>
+    <string name="checkReviews">Check Reviews </string>
+    <string name="newReview">New Review </string>
+    <string name="reviewRating">Rating: </string>
+    <string name="review">Review: </string>
 </resources>

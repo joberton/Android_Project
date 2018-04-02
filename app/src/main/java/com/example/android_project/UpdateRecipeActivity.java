@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import java.util.Calendar;
 
-public class UpdateRecipeActivity extends AppCompatActivity {
+public class UpdateRecipeActivity extends UtilityActivity {
 
     private String action;
 
@@ -66,11 +66,6 @@ public class UpdateRecipeActivity extends AppCompatActivity {
         drinkDescription.setText(data.getStringExtra("description"));
         ingredientsData.setText(data.getStringExtra("ingredients"));
         drinkInstructions.setText(data.getStringExtra("instructions"));
-    }
-
-    private String getViewString(int id)
-    {
-        return ((EditText)findViewById(id)).getText().toString();
     }
 
     private class LoadCategoriesTask extends AsyncTask<Void,Void,Void>

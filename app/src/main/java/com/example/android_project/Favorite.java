@@ -19,8 +19,11 @@ public class Favorite
     @ColumnInfo(name = "id")
     private int favoriteId;
 
+    @ColumnInfo(name = "reviewName")
+    private String reviewName;
+
     @ColumnInfo(name = "rating")
-    private double rating;
+    private float rating;
 
     @ColumnInfo(name = "review")
     private String review;
@@ -28,11 +31,22 @@ public class Favorite
     @ColumnInfo(name = "recipeId")
     private int recipeId;
 
-    public Favorite(double rating, String review, int recipeId)
+    public Favorite(String reviewName,float rating, String review, int recipeId)
     {
         this.rating = rating;
         this.review = review;
         this.recipeId = recipeId;
+        this.reviewName = reviewName;
+    }
+
+    public String getReviewName()
+    {
+        return reviewName;
+    }
+
+    public void setReviewName(String reviewName)
+    {
+        this.reviewName = reviewName;
     }
 
     public int getFavoriteId()
@@ -45,12 +59,12 @@ public class Favorite
         this.favoriteId = favoriteId;
     }
 
-    public double getRating()
+    public float getRating()
     {
         return rating;
     }
 
-    public void setRating(double rating)
+    public void setRating(float rating)
     {
         this.rating = rating;
     }

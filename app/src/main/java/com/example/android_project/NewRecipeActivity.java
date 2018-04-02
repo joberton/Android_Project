@@ -30,7 +30,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
-public class NewRecipeActivity extends AppCompatActivity {
+public class NewRecipeActivity extends UtilityActivity {
 
     private final int REQUEST_IMAGE = 1;
 
@@ -130,10 +130,5 @@ public class NewRecipeActivity extends AppCompatActivity {
             finish();
             return null;
         }
-    }
-
-    private String getViewString(int id)
-    {
-        return ((EditText)findViewById(id)).getText().toString();
     }
 }

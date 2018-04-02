@@ -34,7 +34,12 @@
             android:parentActivityName=".MainActivity" />
         <activity
             android:name=".NewReviewActivity"
-            android:parentActivityName=".MainActivity"></activity>
+            android:parentActivityName=".MainActivity" />
+        <activity android:name=".UtilityActivity" />
+        <activity
+            android:name=".ReviewsActivity"
+            android:parentActivityName=".MainActivity" />
+        <activity android:name=".ReviewDetailsActivity"></activity>
     </application>
 
 </manifest>

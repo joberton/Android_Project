@@ -33,7 +33,7 @@ import java.util.Date;
 import java.util.List;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends UtilityActivity {
 
     private ArrayList<Recipe> recipes = new ArrayList();
     private AppDatabase db;
