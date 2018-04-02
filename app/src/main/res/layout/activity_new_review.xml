@@ -9,7 +9,7 @@
     tools:context="com.example.android_project.NewReviewActivity">
 
     <TextView
-        android:id="@+id/textView6"
+        android:id="@+id/reviewTypeOfAction"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/newReview"

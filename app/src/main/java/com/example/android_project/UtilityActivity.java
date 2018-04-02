@@ -9,7 +9,7 @@ import android.widget.EditText;
 
 public class UtilityActivity extends AppCompatActivity {
 
-    //global utility for the application go here...
+    //global utility functions for the application go here...
     //such as parsing data
 
     public double parseDoubleData(int id)
@@ -36,6 +36,9 @@ public class UtilityActivity extends AppCompatActivity {
         {
             case R.id.settings:
                 startActivity(new Intent(getApplicationContext(),SettingsActivity.class));
+                break;
+            case android.R.id.home:
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
                 break;
         }
         return true;

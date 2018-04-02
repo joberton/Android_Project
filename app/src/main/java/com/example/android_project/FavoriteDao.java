@@ -1,8 +1,10 @@
 package com.example.android_project;
 
 import android.arch.persistence.room.Dao;
+import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
+import android.arch.persistence.room.Update;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,4 +26,10 @@ public interface FavoriteDao {
 
     @Insert
     void createFavorite(Favorite favorite);
+
+    @Update
+    void updateFavorite(Favorite favorite);
+
+    @Delete
+    void deleteFavorite(Favorite favorite);
 }

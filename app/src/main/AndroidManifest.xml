@@ -39,7 +39,8 @@
         <activity
             android:name=".ReviewsActivity"
             android:parentActivityName=".MainActivity" />
-        <activity android:name=".ReviewDetailsActivity"></activity>
+        <activity android:name=".ReviewDetailsActivity" />
+        <activity android:name=".ReviewUpdateActivity"></activity>
     </application>
 
 </manifest>

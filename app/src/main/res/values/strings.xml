@@ -16,6 +16,8 @@
     <string name="writeReview">Write Review </string>
     <string name="checkReviews">Check Reviews </string>
     <string name="newReview">New Review </string>
+    <string name="deleteReview">Delete Review </string>
+    <string name="updateReview">Update Review </string>
     <string name="reviewRating">Rating: </string>
     <string name="review">Review: </string>
 </resources>

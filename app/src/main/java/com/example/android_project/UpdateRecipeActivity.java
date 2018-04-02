@@ -38,10 +38,8 @@ public class UpdateRecipeActivity extends UtilityActivity {
         data = getIntent();
 
         typeOfAction = findViewById(R.id.typeOfAction);
-        typeOfAction.setText(action);
 
         update = findViewById(R.id.createRecipe);
-        update.setText(action);
 
         update.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,6 +60,8 @@ public class UpdateRecipeActivity extends UtilityActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        typeOfAction.setText(action);
+        update.setText(action);
         drinkName.setText(data.getStringExtra("name"));
         drinkDescription.setText(data.getStringExtra("description"));
         ingredientsData.setText(data.getStringExtra("ingredients"));

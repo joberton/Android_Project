@@ -87,7 +87,6 @@ public class ReviewsActivity extends UtilityActivity {
             View view = convertView;
             RatingBar reviewRating;
             TextView reviewName,reviewDescription;
-            int reviewNameLength;
             if(view == null)
             {
                 LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
