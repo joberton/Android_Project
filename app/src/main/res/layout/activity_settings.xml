@@ -1,15 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.android_project.SettingsActivity">
 
     <TextView
-        android:id="@+id/dummySettings"
-        android:layout_width="wrap_content"
+        android:id="@+id/textView13"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Application Settings" />
+        android:text="Settings"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display2" />
 
-</android.support.constraint.ConstraintLayout>
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Item Limit:"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+
+    <EditText
+        android:id="@+id/limitSetting"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName" />
+
+    <TextView
+        android:id="@+id/textView14"
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Application Theme:"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+
+    <Switch
+        android:id="@+id/themeSetting"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Light/Dark" />
+
+    <TextView
+        android:id="@+id/textView15"
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Sorting Options:"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+
+    <Spinner
+        android:id="@+id/sortingSettings"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

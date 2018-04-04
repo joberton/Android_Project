@@ -43,6 +43,7 @@ public class ReviewsActivity extends UtilityActivity {
                 Favorite selectedFavorite = (Favorite) adapterView.getItemAtPosition(i);
                 Intent favoriteIntent = new Intent(getApplicationContext(),ReviewDetailsActivity.class);
                 favoriteIntent.putExtra("id",selectedFavorite.getFavoriteId());
+                favoriteIntent.putExtra("createdDate",selectedFavorite.getDateCreated());
                 favoriteIntent.putExtra("reviewName",selectedFavorite.getReviewName());
                 favoriteIntent.putExtra("rating",selectedFavorite.getRating());
                 favoriteIntent.putExtra("review",selectedFavorite.getReview());
@@ -64,7 +65,7 @@ public class ReviewsActivity extends UtilityActivity {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            favorites.addAll(db.favoriteDao().findAllReviewsByRecipe(data.getIntExtra("id",0)));
+            favorites.addAll(db.favoriteDao().findAllReviewsByRecipe(data.getIntExtra("recipeId",0)));
             return null;
         }
     }
@@ -86,7 +87,7 @@ public class ReviewsActivity extends UtilityActivity {
         public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
             View view = convertView;
             RatingBar reviewRating;
-            TextView reviewName,reviewDescription;
+            TextView reviewName,reviewDateCreated;
             if(view == null)
             {
                 LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -96,11 +97,11 @@ public class ReviewsActivity extends UtilityActivity {
 
             reviewRating = view.findViewById(R.id.reviewRating);
             reviewName = view.findViewById(R.id.reviewName);
-            reviewDescription = view .findViewById(R.id.reviewDescription);
+            reviewDateCreated = view.findViewById(R.id.reviewDateCreated);
 
             reviewRating.setRating(i.getRating());
             reviewName.setText(i.getReviewName());
-            reviewDescription.setText(i.getReview());
+            reviewDateCreated.setText(getString(R.string.dateCreatedTextView) + i.getDateCreated());
             return view;
         }
     }

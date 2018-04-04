@@ -12,8 +12,9 @@ import android.support.annotation.Nullable;
 
 @Entity(foreignKeys = @ForeignKey(entity = Recipe.class,
         parentColumns = "id",
-        childColumns = "recipeId"))
-public class Favorite
+        childColumns = "recipeId",
+        onDelete = ForeignKey.CASCADE))
+public class Favorite implements Comparable<Favorite>
 {
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
@@ -23,20 +24,24 @@ public class Favorite
     private String reviewName;
 
     @ColumnInfo(name = "rating")
-    private float rating;
+    private Float rating;
 
     @ColumnInfo(name = "review")
     private String review;
 
+    @ColumnInfo(name = "dateCreated")
+    private String dateCreated;
+
     @ColumnInfo(name = "recipeId")
     private int recipeId;
 
-    public Favorite(String reviewName,float rating, String review, int recipeId)
+    public Favorite(String reviewName,Float rating, String review, String dateCreated, int recipeId)
     {
         this.rating = rating;
         this.review = review;
         this.recipeId = recipeId;
         this.reviewName = reviewName;
+        this.dateCreated = dateCreated;
     }
 
     public String getReviewName()
@@ -59,12 +64,12 @@ public class Favorite
         this.favoriteId = favoriteId;
     }
 
-    public float getRating()
+    public Float getRating()
     {
         return rating;
     }
 
-    public void setRating(float rating)
+    public void setRating(Float rating)
     {
         this.rating = rating;
     }
@@ -79,6 +84,16 @@ public class Favorite
         this.review = review;
     }
 
+    public String getDateCreated()
+    {
+        return dateCreated;
+    }
+
+    public void setDateCreated(String dateCreated)
+    {
+        this.dateCreated = dateCreated;
+    }
+
     public int getRecipeId()
     {
         return recipeId;
@@ -88,4 +103,11 @@ public class Favorite
     {
         this.recipeId = recipeId;
     }
+
+    //for sorting functionality later on
+    public int compareTo(Favorite favorite)
+    {
+        return this.rating.compareTo(favorite.getRating());
+    }
+
 }

@@ -1,24 +1,33 @@
 package com.example.android_project;
 
+import android.content.ContentProviderClient;
 import android.content.ContentResolver;
 import android.content.Intent;
 
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.Image;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Layout;
 import android.text.format.DateUtils;
+import android.util.Base64;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Spinner;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.InputStream;
 import java.sql.Date;
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -32,11 +41,10 @@ import java.util.ListIterator;
 
 public class NewRecipeActivity extends UtilityActivity {
 
-    private final int REQUEST_IMAGE = 1;
-
-    private String imagePath = "";
+    private String imageData;
 
     private EditText drinkName,drinkDescription,ingredientsData,drinkInstructions;
+    private ImageView drinkImage;
     private ArrayAdapter<String> categoriesAdapter;
     private Spinner categoriesSpinner;
     private Button galleryImage,create;
@@ -57,6 +65,8 @@ public class NewRecipeActivity extends UtilityActivity {
 
         drinkInstructions = findViewById(R.id.newRecipeInstructions);
 
+        drinkImage = findViewById(R.id.uploadedImage);
+
         galleryImage = findViewById(R.id.galleryImage);
         create = findViewById(R.id.createRecipe);
 
@@ -70,15 +80,13 @@ public class NewRecipeActivity extends UtilityActivity {
                             getViewString(ingredientsData.getId()),
                             getViewString(drinkDescription.getId()),
                             getViewString(drinkInstructions.getId()),
-                            imagePath,categoriesSpinner.getSelectedItemPosition() + 1);
+                            imageData,categoriesSpinner.getSelectedItemPosition() + 1);
 
                     new NewRecipeAsyncTask(newRecipe).execute();
                 }
                 else if(view == galleryImage)
                 {
-                    Intent imageIntent = new Intent(Intent.ACTION_GET_CONTENT);
-                    imageIntent.setType("image/*");
-                    startActivityForResult(Intent.createChooser(imageIntent,"Choose a Picture"),REQUEST_IMAGE);
+                    requestImageFromGallery();
                 }
             }
         };
@@ -92,9 +100,9 @@ public class NewRecipeActivity extends UtilityActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == REQUEST_IMAGE && data != null) {
-            imagePath = data.getDataString();
-        }
+        imageData = onImageGalleryResult(requestCode,data);
+        drinkImage.setImageBitmap(decodeBitmap(decodeBase64(imageData)));
+        drinkImage.setVisibility(View.VISIBLE);
     }
 
     private class LoadCategoriesTask extends AsyncTask<Void,Void,Void>

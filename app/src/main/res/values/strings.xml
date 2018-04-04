@@ -19,5 +19,8 @@
     <string name="deleteReview">Delete Review </string>
     <string name="updateReview">Update Review </string>
     <string name="reviewRating">Rating: </string>
+    <string name="reviewName">Review Name: </string>
     <string name="review">Review: </string>
+    <string name="allRecipes">Your Recipes: </string>
+    <string name="galleryImage">Gallery Image</string>
 </resources>

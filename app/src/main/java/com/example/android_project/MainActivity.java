@@ -10,8 +10,10 @@ import android.os.AsyncTask;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.media.session.IMediaControllerCallback;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -57,6 +59,7 @@ public class MainActivity extends UtilityActivity {
 
                 data.putExtra("id",selectedRecipe.getRecipeId());
                 data.putExtra("name",selectedRecipe.getName());
+                data.putExtra("imageData",decodeBase64(selectedRecipe.getImageData()));
                 data.putExtra("ingredients",selectedRecipe.getRecipeIngredients());
                 data.putExtra("description",selectedRecipe.getDescription());
                 data.putExtra("dateCreated",selectedRecipe.getDateCreated());
@@ -112,14 +115,14 @@ public class MainActivity extends UtilityActivity {
                 view = inflater.inflate(textViewResourceId,null);
             }
             Recipe i = recipes.get(position);
-
             image = view.findViewById(R.id.drinkImage);
             name = view.findViewById(R.id.name);
             description = view.findViewById(R.id.description);
             dateCreated = view.findViewById(R.id.dateCreated);
 
-            //image.setImageURI(Uri.parse(i.getImagePath()));
-            //image.setImageBitmap(Bitmap.createScaledBitmap(BitmapFactory.decodeFile(i.getImagePath()), 120, 120, false));
+            Bitmap imageMap = Bitmap.createScaledBitmap(decodeBitmap(decodeBase64(i.getImageData())),250,250,false);;
+
+            image.setImageBitmap(imageMap);
 
             name.setText(i.getName());
             description.setText(getString(R.string.descriptionTextView).concat(i.getDescription()));

@@ -9,6 +9,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RatingBar;
 
+import java.util.Calendar;
+
 public class NewReviewActivity extends UtilityActivity {
 
     private AppDatabase db;
@@ -48,6 +50,7 @@ public class NewReviewActivity extends UtilityActivity {
             db.favoriteDao().createFavorite(new Favorite(getViewString(newReviewName.getId()),
                                             newRatingBar.getRating(),
                                             getViewString(newReview.getId()),
+                                            Calendar.getInstance().getTime().toString(),
                                             data.getIntExtra("id",0)));
             return null;
         }

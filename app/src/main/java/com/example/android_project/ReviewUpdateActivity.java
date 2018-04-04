@@ -70,7 +70,10 @@ public class ReviewUpdateActivity extends UtilityActivity {
             updateFavorite.setReviewName(getViewString(updateReviewName.getId()));
 
             db.favoriteDao().updateFavorite(updateFavorite);
-            startActivity(new Intent(getApplicationContext(),MainActivity.class));
+
+            Intent updateIntent = new Intent(getApplicationContext(),ReviewsActivity.class);
+            updateIntent.putExtras(data.getExtras());
+            startActivity(updateIntent);
             finish();
             return null;
         }

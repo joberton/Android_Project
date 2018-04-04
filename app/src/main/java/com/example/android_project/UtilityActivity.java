@@ -1,16 +1,26 @@
 package com.example.android_project;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
+
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 
 public class UtilityActivity extends AppCompatActivity {
 
     //global utility functions for the application go here...
     //such as parsing data
+    public final int REQUEST_IMAGE = 1;
 
     public double parseDoubleData(int id)
     {
@@ -27,6 +37,54 @@ public class UtilityActivity extends AppCompatActivity {
     public String getViewString(int id)
     {
         return ((EditText)findViewById(id)).getText().toString();
+    }
+
+    public Bitmap getContentUriBitMap(Uri uri)
+    {
+        Bitmap imageData = null;
+        try
+        {
+            imageData = BitmapFactory.decodeStream(getContentResolver().openInputStream(uri));
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return imageData;
+    }
+
+    public String encodeToBase64(Bitmap imageData)
+    {
+        ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+        imageData.compress(Bitmap.CompressFormat.JPEG, 100, byteStream);
+        return Base64.encodeToString(byteStream.toByteArray(), Base64.DEFAULT);
+    }
+
+    public byte[] decodeBase64(String base64Data)
+    {
+        return Base64.decode(base64Data,Base64.DEFAULT);
+    }
+
+    public Bitmap decodeBitmap(byte[] byteData)
+    {
+        return BitmapFactory.decodeByteArray(byteData,0,byteData.length);
+    }
+
+    public void requestImageFromGallery()
+    {
+        Intent imageIntent = new Intent(Intent.ACTION_GET_CONTENT);
+        imageIntent.setType("image/*");
+        startActivityForResult(Intent.createChooser(imageIntent,"Choose a Picture"),REQUEST_IMAGE);
+    }
+
+    public String onImageGalleryResult(int requestCode, Intent data)
+    {
+        String base64ImageData = null;
+        if(requestCode == REQUEST_IMAGE && data != null) {
+            Bitmap imageMap = getContentUriBitMap(data.getData());
+            base64ImageData = encodeToBase64(imageMap);
+        }
+        return base64ImageData;
     }
 
     //default action bar behaviour

@@ -1,19 +1,25 @@
 package com.example.android_project;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-public class RecipeDetailsActivity extends AppCompatActivity {
+public class RecipeDetailsActivity extends UtilityActivity {
 
     private AppDatabase db;
-    private TextView name,description,ingredients,dateCreated,instructions;
+    private TextView name;
+    private EditText description,ingredients,dateCreated,instructions;
+    private ImageView detailsImage;
     private Intent data;
-    private String nameValue,descriptionValue,dateCreatedValue,ingrediantsValue,instructionsValue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +30,7 @@ public class RecipeDetailsActivity extends AppCompatActivity {
 
         data = getIntent();
 
+        detailsImage = findViewById(R.id.detailsImage);
         name = findViewById(R.id.recipeName);
         dateCreated = findViewById(R.id.recipeDateCreated);
         description = findViewById(R.id.recipeDescription);
@@ -35,17 +42,14 @@ public class RecipeDetailsActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        nameValue = data.getStringExtra("name");
-        descriptionValue =  "\n" + data.getStringExtra("description");
-        dateCreatedValue = data.getStringExtra("dateCreated");
-        ingrediantsValue = "\n" + data.getStringExtra("ingredients");
-        instructionsValue = "\n" + data.getStringExtra("instructions");
+        detailsImage.setImageBitmap(decodeBitmap(data.getByteArrayExtra("imageData")));
 
-        name.setText(nameValue);
-        description.setText(getString(R.string.descriptionTextView).concat(descriptionValue));
-        dateCreated.setText(getString(R.string.dateCreatedTextView).concat(dateCreatedValue));
-        ingredients.setText(getString(R.string.ingredientsTextView).concat(ingrediantsValue));
-        instructions.setText(getString(R.string.instructionsTextView).concat(instructionsValue));
+        name.setText(data.getStringExtra("name"));
+        description.setText(data.getStringExtra("description"));
+        dateCreated.setText(data.getStringExtra("dateCreated"));
+        ingredients.setText(data.getStringExtra("ingredients"));
+        instructions.setText(data.getStringExtra("instructions"));
+
     }
 
     @Override
@@ -72,7 +76,7 @@ public class RecipeDetailsActivity extends AppCompatActivity {
                 break;
             case R.id.allReviews:
                 reviewData = new Intent(getApplicationContext(), ReviewsActivity.class);
-                reviewData.putExtra("id",data.getIntExtra("id",0));
+                reviewData.putExtra("recipeId",data.getIntExtra("id",0));
                 startActivity(reviewData);
                 break;
             case android.R.id.home:

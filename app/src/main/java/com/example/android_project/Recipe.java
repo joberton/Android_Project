@@ -39,20 +39,20 @@ public class Recipe implements Comparable<Recipe>{
     @ColumnInfo(name = "instructions")
     private String instructions;
 
-    @ColumnInfo(name = "image_path")
-    private String imagePath;
+    @ColumnInfo(name = "image_data")
+    private String imageData;
 
     @ColumnInfo(name = "categoryId")
     private int categoryId;
 
-    public Recipe(String name, String dateCreated, String recipeIngredients, String description, String instructions, String imagePath, int categoryId)
+    public Recipe(String name, String dateCreated, String recipeIngredients, String description, String instructions, String imageData, int categoryId)
     {
         this.name = name;
         this.dateCreated = dateCreated;
         this.recipeIngredients = recipeIngredients;
         this.description = description;
         this.instructions = instructions;
-        this.imagePath = imagePath;
+        this.imageData = imageData;
         this.categoryId = categoryId;
     }
 
@@ -116,14 +116,14 @@ public class Recipe implements Comparable<Recipe>{
         this.dateCreated = dateCreated;
     }
 
-    public String getImagePath()
+    public String getImageData()
     {
-        return imagePath;
+        return imageData;
     }
 
-    public void setImagePath(String imagePath)
+    public void setImageData(String imageData)
     {
-        this.imagePath = imagePath;
+        this.imageData = imageData;
     }
 
     public int getCategoryId()

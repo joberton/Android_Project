@@ -11,7 +11,7 @@ import android.support.annotation.NonNull;
 /**
  * Created by johno on 3/20/2018.
  */
-@Database(entities = {Recipe.class,Category.class,Favorite.class}, version = 5)
+@Database(entities = {Recipe.class,Category.class,Favorite.class}, version = 10)
 public abstract class AppDatabase extends RoomDatabase{
 
     private static AppDatabase databaseInstance;
@@ -23,7 +23,7 @@ public abstract class AppDatabase extends RoomDatabase{
     {
         if(databaseInstance == null)
         {
-            databaseInstance = Room.databaseBuilder(context,AppDatabase.class,"test-database").addMigrations(MIGRATION_1_2,MIGRATION_2_3,MIGRATION_3_4,MIGRATION_4_5).build();
+            databaseInstance = Room.databaseBuilder(context,AppDatabase.class,"test-database").fallbackToDestructiveMigration().build();
         }
         return databaseInstance;
     }
@@ -45,7 +45,7 @@ public abstract class AppDatabase extends RoomDatabase{
         public void migrate(@NonNull SupportSQLiteDatabase database) {
 
             database.execSQL("ALTER TABLE 'Recipe' " + " ADD COLUMN 'categoryId' INTEGER DEFAULT 0 NOT NULL" +
-                   " REFERENCES 'Category'(categoryId) ON UPDATE NO ACTION ON DELETE NO ACTION");
+                   " REFERENCES 'Category'(categoryId) ON UPDATE NO ACTION ON DELETE CASCADE");
 
             database.execSQL("CREATE TABLE Category ('id' INTEGER NOT NULL, 'categoryName' TEXT, PRIMARY KEY('id'))");
 
@@ -66,6 +66,26 @@ public abstract class AppDatabase extends RoomDatabase{
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
             database.execSQL("ALTER TABLE Favorite " + " ADD COLUMN reviewName TEXT");
+        }
+    };
+
+    static final Migration MIGRATION_5_6 = new Migration(5,6) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("ALTER TABLE Favorite " + " ADD COLUMN dateCreated TEXT");
+        }
+    };
+
+    static final Migration MIGRATION_6_7 = new Migration(6,7) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            //dropped my entire schema and recreated it to avoid headaches
+        }
+    };
+    static final Migration MIGRATION_7_8 = new Migration(7,8) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            //dropped my entire schema and recreated it to avoid headaches
         }
     };
 }

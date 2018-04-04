@@ -2,10 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.android_project">
 
-    <!--
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    -->
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -16,7 +12,6 @@
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -39,8 +34,12 @@
         <activity
             android:name=".ReviewsActivity"
             android:parentActivityName=".MainActivity" />
-        <activity android:name=".ReviewDetailsActivity" />
-        <activity android:name=".ReviewUpdateActivity"></activity>
+        <activity
+            android:name=".ReviewDetailsActivity"
+            android:parentActivityName=".ReviewsActivity"/>
+        <activity
+            android:name=".ReviewUpdateActivity"
+            android:parentActivityName=".ReviewsActivity"></activity>
     </application>
 
 </manifest>

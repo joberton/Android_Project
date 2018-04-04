@@ -2,10 +2,10 @@ package com.example.android_project;
 
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -14,7 +14,8 @@ public class ReviewDetailsActivity extends UtilityActivity {
     private AppDatabase db;
     private Intent data;
 
-    private TextView detailsName,detailsReview;
+    private EditText detailsReview,detailsDateCreated;
+    private TextView detailsName;
     private RatingBar detailsRating;
 
     @Override
@@ -25,7 +26,9 @@ public class ReviewDetailsActivity extends UtilityActivity {
         db = AppDatabase.getDatabaseContext(this);
         data = getIntent();
 
+        detailsDateCreated = findViewById(R.id.recipeDateCreated);
         detailsName = findViewById(R.id.detailsName);
+
         detailsReview = findViewById(R.id.detailsDescription);
         detailsRating = findViewById(R.id.detailsRating);
     }
@@ -33,9 +36,11 @@ public class ReviewDetailsActivity extends UtilityActivity {
     @Override
     protected void onStart() {
         super.onStart();
+
         detailsName.setText(data.getStringExtra("reviewName"));
         detailsReview.setText(data.getStringExtra("review"));
         detailsRating.setRating(data.getFloatExtra("rating",0));
+        detailsDateCreated.setText(data.getStringExtra("createdDate"));
     }
 
     @Override
@@ -47,7 +52,7 @@ public class ReviewDetailsActivity extends UtilityActivity {
                 break;
             case R.id.updateReview:
                 Intent updateData = new Intent(getApplicationContext(),ReviewUpdateActivity.class);
-                updateData.putExtras(new Bundle(data.getExtras()));
+                updateData.putExtras(data.getExtras());
                 startActivity(updateData);
                 break;
             case R.id.deleteReview:
@@ -72,7 +77,9 @@ public class ReviewDetailsActivity extends UtilityActivity {
         protected Void doInBackground(Void... voids) {
             Favorite deleteFavorite = db.favoriteDao().findFavorite(data.getIntExtra("id",0));
             db.favoriteDao().deleteFavorite(deleteFavorite);
-            startActivity(new Intent(getApplicationContext(),ReviewsActivity.class));
+            Intent updateIntent = new Intent(getApplicationContext(),ReviewsActivity.class);
+            updateIntent.putExtras(data.getExtras());
+            startActivity(updateIntent);
             finish();
             return null;
         }

@@ -1,6 +1,7 @@
 package com.example.android_project;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -16,6 +18,8 @@ import java.util.Calendar;
 public class UpdateRecipeActivity extends UtilityActivity {
 
     private String action;
+    private String imageData;
+    private Bitmap imageMap;
 
     private AppDatabase db;
     private Intent data;
@@ -24,7 +28,8 @@ public class UpdateRecipeActivity extends UtilityActivity {
     private EditText drinkName,drinkDescription,ingredientsData,drinkInstructions;
     private ArrayAdapter<String> categoriesAdapter;
     private Spinner categoriesSpinner;
-    private Button update;
+    private ImageView drinkImage;
+    private Button update,galleryImage;
 
 
     @Override
@@ -41,26 +46,54 @@ public class UpdateRecipeActivity extends UtilityActivity {
 
         update = findViewById(R.id.createRecipe);
 
-        update.setOnClickListener(new View.OnClickListener() {
+        View.OnClickListener onClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new UpdateRecipeTask().execute();
+                if(view == update)
+                {
+                    new UpdateRecipeTask().execute();
+                }
+                else if(view == galleryImage)
+                {
+                    requestImageFromGallery();
+                }
             }
-        });
+        };
 
         drinkName = findViewById(R.id.newRecipeName);
+        drinkImage = findViewById(R.id.uploadedImage);
         drinkDescription = findViewById(R.id.newRecipeDescription);
         ingredientsData = findViewById(R.id.ingredientsData);
         drinkInstructions = findViewById(R.id.newRecipeInstructions);
         categoriesSpinner = findViewById(R.id.categoriesSpinner);
+        galleryImage = findViewById(R.id.galleryImage);
+
+        imageMap = decodeBitmap(data.getByteArrayExtra("imageData"));
+        imageData = encodeToBase64(imageMap);
+
+        drinkImage.setImageBitmap(decodeBitmap(data.getByteArrayExtra("imageData")));
+
+        update.setOnClickListener(onClickListener);
+        galleryImage.setOnClickListener(onClickListener);
 
         new LoadCategoriesTask().execute();
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        imageData = onImageGalleryResult(requestCode,data);
+        drinkImage.setImageBitmap(decodeBitmap(decodeBase64(imageData)));
+    }
+
+    @Override
     protected void onStart() {
         super.onStart();
+
         typeOfAction.setText(action);
+
+        drinkImage.setVisibility(View.VISIBLE);
+
         update.setText(action);
         drinkName.setText(data.getStringExtra("name"));
         drinkDescription.setText(data.getStringExtra("description"));
@@ -99,6 +132,7 @@ public class UpdateRecipeActivity extends UtilityActivity {
             updateRecipe.setDateCreated(Calendar.getInstance().getTime().toString());
             updateRecipe.setInstructions(getViewString(drinkInstructions.getId()));
             updateRecipe.setCategoryId(categoriesSpinner.getSelectedItemPosition() + 1);
+            updateRecipe.setImageData(imageData);
 
             db.recipeDao().update(updateRecipe);
 
