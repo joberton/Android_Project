@@ -5,16 +5,29 @@ import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.arch.persistence.room.migration.Migration;
+import android.content.ContentValues;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 /**
  * Created by johno on 3/20/2018.
  */
-@Database(entities = {Recipe.class,Category.class,Favorite.class}, version = 10)
+@Database(entities = {Recipe.class,Category.class,Favorite.class}, version = 20)
 public abstract class AppDatabase extends RoomDatabase{
 
     private static AppDatabase databaseInstance;
+    private final static List<Category> categories = Arrays.asList(new Category("Original Drink"),
+                                                      new Category("Cocktail"),
+                                                      new Category("Shooter"),
+                                                      new Category("Liqueur"),
+                                                      new Category("Other"));
     public abstract RecipeDao recipeDao();
     public abstract CategoryDao categoryDao();
     public abstract FavoriteDao favoriteDao();
@@ -23,15 +36,40 @@ public abstract class AppDatabase extends RoomDatabase{
     {
         if(databaseInstance == null)
         {
-            databaseInstance = Room.databaseBuilder(context,AppDatabase.class,"test-database").fallbackToDestructiveMigration().build();
+            databaseInstance = createDatabase(context);
         }
         return databaseInstance;
+    }
+
+    public static AppDatabase createDatabase(Context context)
+    {
+        return Room.databaseBuilder(context,AppDatabase.class,"test-database").fallbackToDestructiveMigration().addCallback(new Callback() {
+            @Override
+            public void onOpen(@NonNull SupportSQLiteDatabase db) {
+                //using anonymous classes to avoid recursive database calls
+                // and then pre-populate the categories table
+                AsyncTask initialSetup = new AsyncTask<Object,Object,Object>()
+                {
+                    @Override
+                    protected Object doInBackground(Object... objects) {
+                        //check to see if the result set from the categories table is less then categories list
+                        if(databaseInstance.categoryDao().fetchAllCategories().size() < categories.size()) {
+                            databaseInstance.categoryDao().insertAllCategories(categories);
+                        }
+                        return null;
+                    }
+                };
+                initialSetup.execute();
+            }
+        }).build();
     }
 
     public void destroyInstance()
     {
         databaseInstance = null;
     }
+
+    //Database migrations that I went through for educational purposes
 
     static final Migration MIGRATION_1_2 = new Migration(1,2) {
         @Override
@@ -55,37 +93,10 @@ public abstract class AppDatabase extends RoomDatabase{
         }
     };
 
-    static final Migration MIGRATION_3_4 = new Migration(3,4) {
-        @Override
-        public void migrate(@NonNull SupportSQLiteDatabase database) {
-            //dropped my entire schema and recreated it to avoid headaches
-        }
-    };
-
     static final Migration MIGRATION_4_5 = new Migration(4,5) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
             database.execSQL("ALTER TABLE Favorite " + " ADD COLUMN reviewName TEXT");
-        }
-    };
-
-    static final Migration MIGRATION_5_6 = new Migration(5,6) {
-        @Override
-        public void migrate(@NonNull SupportSQLiteDatabase database) {
-            database.execSQL("ALTER TABLE Favorite " + " ADD COLUMN dateCreated TEXT");
-        }
-    };
-
-    static final Migration MIGRATION_6_7 = new Migration(6,7) {
-        @Override
-        public void migrate(@NonNull SupportSQLiteDatabase database) {
-            //dropped my entire schema and recreated it to avoid headaches
-        }
-    };
-    static final Migration MIGRATION_7_8 = new Migration(7,8) {
-        @Override
-        public void migrate(@NonNull SupportSQLiteDatabase database) {
-            //dropped my entire schema and recreated it to avoid headaches
         }
     };
 }

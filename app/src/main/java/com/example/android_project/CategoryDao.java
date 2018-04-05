@@ -24,7 +24,7 @@ public interface CategoryDao
     Category findCategory(int categoryId);
 
     @Insert
-    void insertCategory(Category category);
+    void insertAllCategories(List<Category> categories);
 
     @Delete
     void deleteCategory(Category category);

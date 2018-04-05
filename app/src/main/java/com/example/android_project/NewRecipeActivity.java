@@ -24,6 +24,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -73,7 +74,7 @@ public class NewRecipeActivity extends UtilityActivity {
         View.OnClickListener onClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(view == create)
+                if(view == create && isNotBlank(imageData))
                 {
                     Recipe newRecipe = new Recipe(getViewString(drinkName.getId()),
                             Calendar.getInstance().getTime().toString(),
@@ -87,6 +88,10 @@ public class NewRecipeActivity extends UtilityActivity {
                 else if(view == galleryImage)
                 {
                     requestImageFromGallery();
+                }
+                else
+                {
+                    Toast.makeText(getApplicationContext(),"Please Upload an Image",Toast.LENGTH_SHORT).show();
                 }
             }
         };

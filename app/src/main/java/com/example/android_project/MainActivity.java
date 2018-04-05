@@ -120,8 +120,8 @@ public class MainActivity extends UtilityActivity {
             description = view.findViewById(R.id.description);
             dateCreated = view.findViewById(R.id.dateCreated);
 
-            Bitmap imageMap = Bitmap.createScaledBitmap(decodeBitmap(decodeBase64(i.getImageData())),250,250,false);;
 
+            Bitmap imageMap = Bitmap.createScaledBitmap(decodeBitmap(decodeBase64(i.getImageData())), 250, 250, false);
             image.setImageBitmap(imageMap);
 
             name.setText(i.getName());
