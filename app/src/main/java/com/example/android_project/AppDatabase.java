@@ -23,7 +23,7 @@ import java.util.concurrent.Executors;
 public abstract class AppDatabase extends RoomDatabase{
 
     private static AppDatabase databaseInstance;
-    private final static List<Category> categories = Arrays.asList(new Category("Original Drink"),
+    private final static List<Category> CATEGORIES = Arrays.asList(new Category("Original Drink"),
                                                       new Category("Cocktail"),
                                                       new Category("Shooter"),
                                                       new Category("Liqueur"),
@@ -53,8 +53,8 @@ public abstract class AppDatabase extends RoomDatabase{
                     @Override
                     protected Object doInBackground(Object... objects) {
                         //check to see if the result set from the categories table is less then categories list
-                        if(databaseInstance.categoryDao().fetchAllCategories().size() < categories.size()) {
-                            databaseInstance.categoryDao().insertAllCategories(categories);
+                        if(databaseInstance.categoryDao().fetchAllCategories().size() < CATEGORIES.size()) {
+                            databaseInstance.categoryDao().insertAllCategories(CATEGORIES);
                         }
                         return null;
                     }

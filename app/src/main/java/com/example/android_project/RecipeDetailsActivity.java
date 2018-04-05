@@ -66,6 +66,9 @@ public class RecipeDetailsActivity extends UtilityActivity {
             case R.id.deleteRecipe:
                 new DeleteRecipeTask().execute();
                 break;
+            case R.id.historyOfIngredients:
+                startActivity(new Intent(getApplicationContext(),RecipeHistoryActivity.class));
+                break;
             case R.id.settings:
                 startActivity(new Intent(getApplicationContext(),SettingsActivity.class));
                 break;

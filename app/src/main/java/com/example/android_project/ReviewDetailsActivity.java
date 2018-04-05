@@ -47,6 +47,9 @@ public class ReviewDetailsActivity extends UtilityActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId())
         {
+            case R.id.historyOfIngredients:
+                startActivity(new Intent(getApplicationContext(),RecipeHistoryActivity.class));
+                break;
             case R.id.settings:
                 startActivity(new Intent(getApplicationContext(),SettingsActivity.class));
                 break;

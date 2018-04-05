@@ -138,6 +138,9 @@ public class MainActivity extends UtilityActivity {
             case R.id.newRecipe:
                 startActivity(new Intent(getApplicationContext(),NewRecipeActivity.class));
                 break;
+            case R.id.historyOfIngredients:
+                startActivity(new Intent(getApplicationContext(),RecipeHistoryActivity.class));
+                break;
             case R.id.settings:
                 startActivity(new Intent(getApplicationContext(),SettingsActivity.class));
                 break;

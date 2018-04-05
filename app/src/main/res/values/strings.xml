@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Android_Project</string>
+    <string name="app_name">My Merry Catalogue</string>
     <string name="applicationSettings">Application Settings</string>
     <string name="nameTextView">Name: </string>
     <string name="dateCreatedTextView">Date Created: </string>
@@ -23,4 +23,6 @@
     <string name="review">Review: </string>
     <string name="allRecipes">Your Recipes: </string>
     <string name="galleryImage">Gallery Image</string>
+    <string name="ingredientsHistory">Drink History</string>
+    <string name="history">History: </string>
 </resources>
