@@ -1,6 +1,7 @@
 package com.example.android_project;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 public class ReviewDetailsActivity extends UtilityActivity {
 
     private AppDatabase db;
+    private SharedPreferences sharedPreferences;
     private Intent data;
 
     private EditText detailsReview,detailsDateCreated;
@@ -20,6 +22,11 @@ public class ReviewDetailsActivity extends UtilityActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        sharedPreferences = getSharedPreferences("myPerfs",MODE_PRIVATE);
+
+        setTheme(sharedPreferences.getInt("theme",R.style.DarkAppTheme));
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_review_details);
 

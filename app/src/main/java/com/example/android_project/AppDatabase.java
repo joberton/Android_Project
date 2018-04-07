@@ -4,6 +4,7 @@ import android.arch.persistence.db.SupportSQLiteDatabase;
 import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
+import android.arch.persistence.room.TypeConverters;
 import android.arch.persistence.room.migration.Migration;
 import android.content.ContentValues;
 import android.content.Context;
@@ -19,7 +20,8 @@ import java.util.concurrent.Executors;
 /**
  * Created by johno on 3/20/2018.
  */
-@Database(entities = {Recipe.class,Category.class,Favorite.class}, version = 20)
+@Database(entities = {Recipe.class,Category.class,Favorite.class}, version = 21)
+@TypeConverters({DateTypeConverter.class})
 public abstract class AppDatabase extends RoomDatabase{
 
     private static AppDatabase databaseInstance;

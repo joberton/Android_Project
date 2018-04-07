@@ -3,6 +3,7 @@ package com.example.android_project;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -31,6 +32,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -38,17 +40,25 @@ import java.util.List;
 public class MainActivity extends UtilityActivity {
 
     private ArrayList<Recipe> recipes = new ArrayList();
+    private int sortCode;
     private AppDatabase db;
+    private SharedPreferences sharedPreferences;
     private RecipeAdapter recipeAdapter;
     private ListView list;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        sharedPreferences = getSharedPreferences("myPerfs",MODE_PRIVATE);
+
+        sortCode = sharedPreferences.getInt("sortingCode",0);
+
+        setTheme(sharedPreferences.getInt("theme",R.style.DarkAppTheme));
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         db = AppDatabase.getDatabaseContext(this);
-
         list = findViewById(R.id.list);
 
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -62,7 +72,7 @@ public class MainActivity extends UtilityActivity {
                 data.putExtra("imageData",decodeBase64(selectedRecipe.getImageData()));
                 data.putExtra("ingredients",selectedRecipe.getRecipeIngredients());
                 data.putExtra("description",selectedRecipe.getDescription());
-                data.putExtra("dateCreated",selectedRecipe.getDateCreated());
+                data.putExtra("dateCreated",selectedRecipe.getDateCreated().toString());
                 data.putExtra("instructions",selectedRecipe.getInstructions());
                 data.putExtra("categoryId", selectedRecipe.getCategoryId());
 
@@ -86,6 +96,16 @@ public class MainActivity extends UtilityActivity {
         @Override
         protected Void doInBackground(Void... voids) {
             recipes.addAll(db.recipeDao().getAll());
+            switch(sortCode)
+            {
+                case SORT_BY_DATE:
+                    Collections.sort(recipes);
+                    reverseList(recipes,sortCode);
+                    break;
+                case SORT_BY_NAME:
+                    Collections.sort(recipes,Recipe.Comparators.NAME);
+                    break;
+            }
             return null;
         }
     }

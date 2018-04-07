@@ -1,6 +1,7 @@
 package com.example.android_project;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -16,6 +17,8 @@ import android.widget.TextView;
 public class RecipeDetailsActivity extends UtilityActivity {
 
     private AppDatabase db;
+    private SharedPreferences sharedPreferences;
+
     private TextView name;
     private EditText description,ingredients,dateCreated,instructions;
     private ImageView detailsImage;
@@ -23,6 +26,11 @@ public class RecipeDetailsActivity extends UtilityActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        sharedPreferences = getSharedPreferences("myPerfs",MODE_PRIVATE);
+
+        setTheme(sharedPreferences.getInt("theme",R.style.DarkAppTheme));
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_details);
 

@@ -1,18 +1,23 @@
 package com.example.android_project;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class UtilityActivity extends AppCompatActivity {
@@ -21,9 +26,28 @@ public class UtilityActivity extends AppCompatActivity {
     //such as parsing data
     public final int REQUEST_IMAGE = 1;
 
+    public final int NO_SORT = 0;
+    public final int SORT_BY_DATE = 1;
+    public final int SORT_BY_NAME = 2;
+    public final int SORT_BY_RATING = 3;
+
+    public List reverseList(List listToReverse,int sortCode)
+    {
+        if(sortCode != NO_SORT)
+        {
+            Collections.reverse(listToReverse);
+        }
+        return listToReverse;
+    }
+
+    public Context getThemedContext()
+    {
+        return getSupportActionBar().getThemedContext();
+    }
+
     public boolean isNotBlank(String data)
     {
-        return data != null && data != "";
+        return data != null && data.length() > 0;
     }
 
     public double parseDoubleData(int id)

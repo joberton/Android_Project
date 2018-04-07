@@ -4,7 +4,11 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.PrimaryKey;
+import android.media.Rating;
 import android.support.annotation.Nullable;
+
+import java.util.Comparator;
+import java.util.Date;
 
 /**
  * Created by johno on 3/26/2018.
@@ -30,12 +34,12 @@ public class Favorite implements Comparable<Favorite>
     private String review;
 
     @ColumnInfo(name = "dateCreated")
-    private String dateCreated;
+    private Date dateCreated;
 
     @ColumnInfo(name = "recipeId")
     private int recipeId;
 
-    public Favorite(String reviewName,Float rating, String review, String dateCreated, int recipeId)
+    public Favorite(String reviewName,Float rating, String review, Date dateCreated, int recipeId)
     {
         this.rating = rating;
         this.review = review;
@@ -84,12 +88,12 @@ public class Favorite implements Comparable<Favorite>
         this.review = review;
     }
 
-    public String getDateCreated()
+    public Date getDateCreated()
     {
         return dateCreated;
     }
 
-    public void setDateCreated(String dateCreated)
+    public void setDateCreated(Date dateCreated)
     {
         this.dateCreated = dateCreated;
     }
@@ -104,10 +108,32 @@ public class Favorite implements Comparable<Favorite>
         this.recipeId = recipeId;
     }
 
-    //for sorting functionality later on
     public int compareTo(Favorite favorite)
     {
-        return this.rating.compareTo(favorite.getRating());
+        return Comparators.DATE_CREATED.compare(this,favorite);
     }
 
+    public static class Comparators
+    {
+        public static Comparator<Favorite> DATE_CREATED = new Comparator<Favorite>() {
+            @Override
+            public int compare(Favorite favorite, Favorite t1) {
+                return favorite.getDateCreated().compareTo(t1.getDateCreated());
+            }
+        };
+
+        public static Comparator<Favorite> REVIEW_NAME = new Comparator<Favorite>() {
+            @Override
+            public int compare(Favorite favorite, Favorite t1) {
+                return favorite.getReviewName().compareTo(t1.getReviewName());
+            }
+        };
+
+        public static Comparator<Favorite> RATING = new Comparator<Favorite>() {
+            @Override
+            public int compare(Favorite favorite, Favorite t1) {
+                return favorite.getRating().compareTo(t1.getRating());
+            }
+        };
+    }
 }

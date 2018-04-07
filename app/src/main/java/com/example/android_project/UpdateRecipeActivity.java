@@ -1,6 +1,7 @@
 package com.example.android_project;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
@@ -22,6 +23,7 @@ public class UpdateRecipeActivity extends UtilityActivity {
     private Bitmap imageMap;
 
     private AppDatabase db;
+    private SharedPreferences sharedPreferences;
     private Intent data;
 
     private TextView typeOfAction;
@@ -34,6 +36,11 @@ public class UpdateRecipeActivity extends UtilityActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        sharedPreferences = getSharedPreferences("myPerfs",MODE_PRIVATE);
+
+        setTheme(sharedPreferences.getInt("theme",R.style.DarkAppTheme));
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_recipe);
 
@@ -112,7 +119,7 @@ public class UpdateRecipeActivity extends UtilityActivity {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            categoriesAdapter = new ArrayAdapter(getApplicationContext(),android.R.layout.simple_spinner_dropdown_item);
+            categoriesAdapter = new ArrayAdapter(getThemedContext(),android.R.layout.simple_spinner_dropdown_item);
             categoriesAdapter.addAll(db.categoryDao().fetchCategoryNames());
             return null;
         }
@@ -129,7 +136,7 @@ public class UpdateRecipeActivity extends UtilityActivity {
             updateRecipe.setName(getViewString(drinkName.getId()));
             updateRecipe.setDescription(getViewString(drinkDescription.getId()));
             updateRecipe.setRecipeIngredients(getViewString(ingredientsData.getId()));;
-            updateRecipe.setDateCreated(Calendar.getInstance().getTime().toString());
+            updateRecipe.setDateCreated(Calendar.getInstance().getTime());
             updateRecipe.setInstructions(getViewString(drinkInstructions.getId()));
             updateRecipe.setCategoryId(categoriesSpinner.getSelectedItemPosition() + 1);
             updateRecipe.setImageData(imageData);

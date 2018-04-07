@@ -4,6 +4,7 @@ import android.content.ContentProviderClient;
 import android.content.ContentResolver;
 import android.content.Intent;
 
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -50,9 +51,15 @@ public class NewRecipeActivity extends UtilityActivity {
     private Spinner categoriesSpinner;
     private Button galleryImage,create;
     private AppDatabase db;
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        sharedPreferences = getSharedPreferences("myPerfs",MODE_PRIVATE);
+
+        setTheme(sharedPreferences.getInt("theme",R.style.DarkAppTheme));
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_recipe);
 
@@ -77,7 +84,7 @@ public class NewRecipeActivity extends UtilityActivity {
                 if(view == create && isNotBlank(imageData))
                 {
                     Recipe newRecipe = new Recipe(getViewString(drinkName.getId()),
-                            Calendar.getInstance().getTime().toString(),
+                            Calendar.getInstance().getTime(),
                             getViewString(ingredientsData.getId()),
                             getViewString(drinkDescription.getId()),
                             getViewString(drinkInstructions.getId()),
@@ -120,7 +127,7 @@ public class NewRecipeActivity extends UtilityActivity {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            categoriesAdapter = new ArrayAdapter(getApplicationContext(),android.R.layout.simple_spinner_dropdown_item);
+            categoriesAdapter = new ArrayAdapter(getThemedContext(),android.R.layout.simple_spinner_dropdown_item);
             categoriesAdapter.addAll(db.categoryDao().fetchCategoryNames());
             return null;
         }

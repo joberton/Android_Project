@@ -1,6 +1,7 @@
 package com.example.android_project;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import java.util.Calendar;
 public class NewReviewActivity extends UtilityActivity {
 
     private AppDatabase db;
+    private SharedPreferences sharedPreferences;
     private Intent data;
 
     private RatingBar newRatingBar;
@@ -22,6 +24,11 @@ public class NewReviewActivity extends UtilityActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        sharedPreferences = getSharedPreferences("myPerfs",MODE_PRIVATE);
+
+        setTheme(sharedPreferences.getInt("theme",R.style.DarkAppTheme));
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_review);
 
@@ -50,7 +57,7 @@ public class NewReviewActivity extends UtilityActivity {
             db.favoriteDao().createFavorite(new Favorite(getViewString(newReviewName.getId()),
                                             newRatingBar.getRating(),
                                             getViewString(newReview.getId()),
-                                            Calendar.getInstance().getTime().toString(),
+                                            Calendar.getInstance().getTime(),
                                             data.getIntExtra("id",0)));
             return null;
         }

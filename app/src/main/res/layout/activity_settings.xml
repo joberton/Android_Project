@@ -15,21 +15,6 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Display2" />
 
     <TextView
-        android:id="@+id/textView6"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="Item Limit:"
-        android:textAppearance="@style/TextAppearance.AppCompat.Title" />
-
-    <EditText
-        android:id="@+id/limitSetting"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName" />
-
-    <TextView
         android:id="@+id/textView14"
         android:layout_marginTop="20dp"
         android:layout_width="match_parent"
@@ -41,7 +26,7 @@
         android:id="@+id/themeSetting"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Light/Dark" />
+        android:text="Dark/Light Theme" />
 
     <TextView
         android:id="@+id/textView15"
@@ -54,6 +39,8 @@
     <Spinner
         android:id="@+id/sortingSettings"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:isScrollContainer="false"
+        android:spinnerMode="dialog" />
 
 </LinearLayout>

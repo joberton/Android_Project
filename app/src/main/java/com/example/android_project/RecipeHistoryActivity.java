@@ -1,11 +1,15 @@
 package com.example.android_project;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -16,7 +20,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class RecipeHistoryActivity extends UtilityActivity {
+public class RecipeHistoryActivity extends AppCompatActivity {
+
+    private SharedPreferences sharedPreferences;
 
     private ArrayList<DrinkHistory> drinkHistoryList = new ArrayList();
     private DrinkHistoryAdapter drinkHistoryAdapter;
@@ -24,6 +30,11 @@ public class RecipeHistoryActivity extends UtilityActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        sharedPreferences = getSharedPreferences("myPerfs",MODE_PRIVATE);
+
+        setTheme(sharedPreferences.getInt("theme",R.style.DarkAppTheme));
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_history);
 
@@ -69,5 +80,25 @@ public class RecipeHistoryActivity extends UtilityActivity {
             drinkHistory.setText(getString(R.string.history).concat(i.getDrinkHistory()));
             return view;
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId())
+        {
+            case R.id.settings:
+                startActivity(new Intent(getApplicationContext(),SettingsActivity.class));
+                break;
+            case android.R.id.home:
+                startActivity(new Intent(getApplicationContext(),MainActivity.class));
+                break;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.just_settings_menu,menu);
+        return super.onCreateOptionsMenu(menu);
     }
 }

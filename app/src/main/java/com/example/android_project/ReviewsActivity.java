@@ -2,6 +2,7 @@ package com.example.android_project;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -16,18 +17,28 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class ReviewsActivity extends UtilityActivity {
 
     private ArrayList<Favorite> favorites = new ArrayList();
     private AppDatabase db;
+    private SharedPreferences sharedPreferences;
     private Intent data;
+    private int sortCode;
 
     private ReviewAdapter reviewAdapter;
     private ListView reviewList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        sharedPreferences = getSharedPreferences("myPerfs",MODE_PRIVATE);
+
+        setTheme(sharedPreferences.getInt("theme",R.style.DarkAppTheme));
+
+        sortCode = sharedPreferences.getInt("sortingCode",0);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reviews);
 
@@ -43,7 +54,7 @@ public class ReviewsActivity extends UtilityActivity {
                 Favorite selectedFavorite = (Favorite) adapterView.getItemAtPosition(i);
                 Intent favoriteIntent = new Intent(getApplicationContext(),ReviewDetailsActivity.class);
                 favoriteIntent.putExtra("id",selectedFavorite.getFavoriteId());
-                favoriteIntent.putExtra("createdDate",selectedFavorite.getDateCreated());
+                favoriteIntent.putExtra("createdDate",selectedFavorite.getDateCreated().toString());
                 favoriteIntent.putExtra("reviewName",selectedFavorite.getReviewName());
                 favoriteIntent.putExtra("rating",selectedFavorite.getRating());
                 favoriteIntent.putExtra("review",selectedFavorite.getReview());
@@ -66,6 +77,20 @@ public class ReviewsActivity extends UtilityActivity {
         @Override
         protected Void doInBackground(Void... voids) {
             favorites.addAll(db.favoriteDao().findAllReviewsByRecipe(data.getIntExtra("recipeId",0)));
+            switch(sortCode)
+            {
+                case SORT_BY_DATE:
+                    Collections.sort(favorites);
+                    reverseList(favorites,sortCode);
+                    break;
+                case SORT_BY_NAME:
+                    Collections.sort(favorites,Favorite.Comparators.REVIEW_NAME);
+                    break;
+                case SORT_BY_RATING:
+                    Collections.sort(favorites,Favorite.Comparators.RATING);
+                    reverseList(favorites,sortCode);
+                    break;
+            }
             return null;
         }
     }

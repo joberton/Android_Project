@@ -25,4 +25,10 @@
     <string name="galleryImage">Gallery Image</string>
     <string name="ingredientsHistory">Drink History</string>
     <string name="history">History: </string>
+    <string-array name="sortingOptions">
+        <item>Not Sorted</item>
+        <item>Sort By Published Date</item>
+        <item>Sort By Name</item>
+        <item>Sort By Recipe Rating</item>
+    </string-array>
 </resources>

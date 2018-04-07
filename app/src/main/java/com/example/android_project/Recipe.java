@@ -9,6 +9,7 @@ import android.arch.persistence.room.TypeConverter;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 
+import java.util.Comparator;
 import java.util.Date;
 
 /**
@@ -28,7 +29,7 @@ public class Recipe implements Comparable<Recipe>{
     private String name;
 
     @ColumnInfo(name = "date_created")
-    private String dateCreated;
+    private Date dateCreated;
 
     @ColumnInfo(name = "description")
     private String description;
@@ -45,7 +46,7 @@ public class Recipe implements Comparable<Recipe>{
     @ColumnInfo(name = "categoryId")
     private int categoryId;
 
-    public Recipe(String name, String dateCreated, String recipeIngredients, String description, String instructions, String imageData, int categoryId)
+    public Recipe(String name, Date dateCreated, String recipeIngredients, String description, String instructions, String imageData, int categoryId)
     {
         this.name = name;
         this.dateCreated = dateCreated;
@@ -106,12 +107,12 @@ public class Recipe implements Comparable<Recipe>{
         this.name = name;
     }
 
-    public String getDateCreated()
+    public Date getDateCreated()
     {
         return dateCreated;
     }
 
-    public void setDateCreated(String dateCreated)
+    public void setDateCreated(Date dateCreated)
     {
         this.dateCreated = dateCreated;
     }
@@ -136,9 +137,26 @@ public class Recipe implements Comparable<Recipe>{
         this.categoryId = categoryId;
     }
 
-    //for sorting functionality later on
-    public int compareTo(Recipe recipe)
+    @Override
+    public int compareTo(@NonNull Recipe recipe) {
+        return Comparators.DATE_CREATED.compare(this,recipe);
+    }
+
+    public static class Comparators
     {
-        return this.name.compareTo(recipe.getName());
+        public static Comparator<Recipe> NAME = new Comparator<Recipe>()
+        {
+            @Override
+            public int compare(Recipe recipe, Recipe t1) {
+                return recipe.getName().compareTo(t1.getName());
+            }
+        };
+
+        public static Comparator<Recipe> DATE_CREATED = new Comparator<Recipe>() {
+            @Override
+            public int compare(Recipe recipe, Recipe t1) {
+                return recipe.getDateCreated().compareTo(t1.getDateCreated());
+            }
+        };
     }
 }
