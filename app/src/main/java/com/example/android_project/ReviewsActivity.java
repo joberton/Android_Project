@@ -21,11 +21,13 @@ import java.util.Collections;
 
 public class ReviewsActivity extends UtilityActivity {
 
-    private ArrayList<Favorite> favorites = new ArrayList();
     private AppDatabase db;
     private SharedPreferences sharedPreferences;
     private Intent data;
+
     private int sortCode;
+
+    private ArrayList<Favorite> favorites = new ArrayList();
 
     private ReviewAdapter reviewAdapter;
     private ListView reviewList;

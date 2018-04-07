@@ -6,9 +6,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
+import android.util.ArrayMap;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
@@ -16,6 +18,7 @@ import android.view.MenuItem;
 import android.widget.EditText;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -30,6 +33,30 @@ public class UtilityActivity extends AppCompatActivity {
     public final int SORT_BY_DATE = 1;
     public final int SORT_BY_NAME = 2;
     public final int SORT_BY_RATING = 3;
+
+    public ArrayMap<EditText,String> formValidation(final ArrayMap<EditText,String> VALIDATION_MAP, final boolean[] VALIDATION_CHECKS)
+    {
+        ArrayMap<EditText,String> formErrors = new ArrayMap<>();
+        for(int i = 0; i < VALIDATION_CHECKS.length; i++)
+        {
+            if(!VALIDATION_CHECKS[i])
+            {
+                EditText failedView = VALIDATION_MAP.keyAt(i);
+                formErrors.put(failedView,VALIDATION_MAP.get(failedView));
+            }
+        }
+        return formErrors;
+    }
+
+    public void buildErrorMessages(final ArrayMap<EditText,String> ERRORS)
+    {
+        for(int i = 0; i < ERRORS.size(); i++)
+        {
+            EditText failedView = ERRORS.keyAt(i);
+            failedView.setHintTextColor(Color.RED);
+            failedView.setHint(ERRORS.get(failedView));
+        }
+    }
 
     public List reverseList(List listToReverse,int sortCode)
     {

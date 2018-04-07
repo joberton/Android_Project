@@ -39,10 +39,13 @@ import java.util.List;
 
 public class MainActivity extends UtilityActivity {
 
-    private ArrayList<Recipe> recipes = new ArrayList();
-    private int sortCode;
     private AppDatabase db;
     private SharedPreferences sharedPreferences;
+
+    private final int MAXIMUM_DESCRIPTION_LENGTH = 35;
+    private int sortCode;
+
+    private ArrayList<Recipe> recipes = new ArrayList();
     private RecipeAdapter recipeAdapter;
     private ListView list;
 
@@ -126,6 +129,7 @@ public class MainActivity extends UtilityActivity {
         @Override
         public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
             TextView name,description,dateCreated;
+            String truncatedDescription;
             ImageView image;
             View view = convertView;
 
@@ -144,8 +148,11 @@ public class MainActivity extends UtilityActivity {
             Bitmap imageMap = Bitmap.createScaledBitmap(decodeBitmap(decodeBase64(i.getImageData())), 250, 250, false);
             image.setImageBitmap(imageMap);
 
+            truncatedDescription = i.getDescription();
+            truncatedDescription =  MAXIMUM_DESCRIPTION_LENGTH >= truncatedDescription.length() ? truncatedDescription : truncatedDescription.substring(0,MAXIMUM_DESCRIPTION_LENGTH).concat("........");
+
             name.setText(i.getName());
-            description.setText(getString(R.string.descriptionTextView).concat(i.getDescription()));
+            description.setText(getString(R.string.descriptionTextView).concat(truncatedDescription));
             dateCreated.setText(getString(R.string.dateCreatedTextView).concat(i.getDateCreated().toString()));
             return view;
         }

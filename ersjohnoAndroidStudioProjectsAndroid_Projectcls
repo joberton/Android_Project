@@ -1,0 +1,527 @@
+[1mdiff --git a/app/src/main/java/com/example/android_project/MainActivity.java b/app/src/main/java/com/example/android_project/MainActivity.java[m
+[1mindex 0e3ec6e..96da164 100644[m
+[1m--- a/app/src/main/java/com/example/android_project/MainActivity.java[m
+[1m+++ b/app/src/main/java/com/example/android_project/MainActivity.java[m
+[36m@@ -39,10 +39,13 @@[m [mimport java.util.List;[m
+ [m
+ public class MainActivity extends UtilityActivity {[m
+ [m
+[31m-    private ArrayList<Recipe> recipes = new ArrayList();[m
+[31m-    private int sortCode;[m
+     private AppDatabase db;[m
+     private SharedPreferences sharedPreferences;[m
+[32m+[m
+[32m+[m[32m    private final int MAXIMUM_DESCRIPTION_LENGTH = 35;[m
+[32m+[m[32m    private int sortCode;[m
+[32m+[m
+[32m+[m[32m    private ArrayList<Recipe> recipes = new ArrayList();[m
+     private RecipeAdapter recipeAdapter;[m
+     private ListView list;[m
+ [m
+[36m@@ -126,6 +129,7 @@[m [mpublic class MainActivity extends UtilityActivity {[m
+         @Override[m
+         public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {[m
+             TextView name,description,dateCreated;[m
+[32m+[m[32m            String truncatedDescription;[m
+             ImageView image;[m
+             View view = convertView;[m
+ [m
+[36m@@ -144,8 +148,11 @@[m [mpublic class MainActivity extends UtilityActivity {[m
+             Bitmap imageMap = Bitmap.createScaledBitmap(decodeBitmap(decodeBase64(i.getImageData())), 250, 250, false);[m
+             image.setImageBitmap(imageMap);[m
+ [m
+[32m+[m[32m            truncatedDescription = i.getDescription();[m
+[32m+[m[32m            truncatedDescription =  MAXIMUM_DESCRIPTION_LENGTH >= truncatedDescription.length() ? truncatedDescription : truncatedDescription.substring(0,MAXIMUM_DESCRIPTION_LENGTH).concat("........");[m
+[32m+[m
+             name.setText(i.getName());[m
+[31m-            description.setText(getString(R.string.descriptionTextView).concat(i.getDescription()));[m
+[32m+[m[32m            description.setText(getString(R.string.descriptionTextView).concat(truncatedDescription));[m
+             dateCreated.setText(getString(R.string.dateCreatedTextView).concat(i.getDateCreated().toString()));[m
+             return view;[m
+         }[m
+[1mdiff --git a/app/src/main/java/com/example/android_project/NewRecipeActivity.java b/app/src/main/java/com/example/android_project/NewRecipeActivity.java[m
+[1mindex 9366dea..d0c8469 100644[m
+[1m--- a/app/src/main/java/com/example/android_project/NewRecipeActivity.java[m
+[1m+++ b/app/src/main/java/com/example/android_project/NewRecipeActivity.java[m
+[36m@@ -8,6 +8,7 @@[m [mimport android.content.SharedPreferences;[m
+ import android.database.Cursor;[m
+ import android.graphics.Bitmap;[m
+ import android.graphics.BitmapFactory;[m
+[32m+[m[32mimport android.graphics.Color;[m
+ import android.media.Image;[m
+ import android.net.Uri;[m
+ import android.os.AsyncTask;[m
+[36m@@ -17,6 +18,7 @@[m [mimport android.support.v7.app.AppCompatActivity;[m
+ import android.os.Bundle;[m
+ import android.text.Layout;[m
+ import android.text.format.DateUtils;[m
+[32m+[m[32mimport android.util.ArrayMap;[m
+ import android.util.Base64;[m
+ import android.view.View;[m
+ import android.widget.ArrayAdapter;[m
+[36m@@ -24,6 +26,7 @@[m [mimport android.widget.Button;[m
+ import android.widget.EditText;[m
+ import android.widget.ImageButton;[m
+ import android.widget.ImageView;[m
+[32m+[m[32mimport android.widget.LinearLayout;[m
+ import android.widget.Spinner;[m
+ import android.widget.Toast;[m
+ [m
+[36m@@ -40,18 +43,27 @@[m [mimport java.util.HashMap;[m
+ import java.util.Iterator;[m
+ import java.util.List;[m
+ import java.util.ListIterator;[m
+[32m+[m[32mimport java.util.Map;[m
+ [m
+ public class NewRecipeActivity extends UtilityActivity {[m
+ [m
+[32m+[m[32m    private AppDatabase db;[m
+[32m+[m[32m    private SharedPreferences sharedPreferences;[m
+[32m+[m
+[32m+[m[32m    private ArrayAdapter<String> categoriesAdapter;[m
+[32m+[m
+[32m+[m[32m    private String drinkNameValue;[m
+[32m+[m[32m    private String drinkDescriptionValue;[m
+[32m+[m[32m    private String ingredientsDataValue;[m
+[32m+[m[32m    private String drinkInstructionsValue;[m
+     private String imageData;[m
+ [m
+[32m+[m[32m    private LinearLayout layout;[m
+     private EditText drinkName,drinkDescription,ingredientsData,drinkInstructions;[m
+     private ImageView drinkImage;[m
+[31m-    private ArrayAdapter<String> categoriesAdapter;[m
+     private Spinner categoriesSpinner;[m
+     private Button galleryImage,create;[m
+[31m-    private AppDatabase db;[m
+[31m-    private SharedPreferences sharedPreferences;[m
+[32m+[m
+ [m
+     @Override[m
+     protected void onCreate(Bundle savedInstanceState) {[m
+[36m@@ -63,6 +75,8 @@[m [mpublic class NewRecipeActivity extends UtilityActivity {[m
+         super.onCreate(savedInstanceState);[m
+         setContentView(R.layout.activity_new_recipe);[m
+ [m
+[32m+[m[32m        layout = findViewById(R.id.newRecipeLayout);[m
+[32m+[m
+         db = AppDatabase.getDatabaseContext(this);[m
+ [m
+         drinkName = findViewById(R.id.newRecipeName);[m
+[36m@@ -81,13 +95,34 @@[m [mpublic class NewRecipeActivity extends UtilityActivity {[m
+         View.OnClickListener onClickListener = new View.OnClickListener() {[m
+             @Override[m
+             public void onClick(View view) {[m
+[31m-                if(view == create && isNotBlank(imageData))[m
+[32m+[m
+[32m+[m[32m                drinkNameValue = getViewString(drinkName.getId()).trim();[m
+[32m+[m[32m                ingredientsDataValue = getViewString(ingredientsData.getId()).trim();[m
+[32m+[m[32m                drinkDescriptionValue = getViewString(drinkDescription.getId()).trim();[m
+[32m+[m[32m                drinkInstructionsValue = getViewString(drinkInstructions.getId()).trim();[m
+[32m+[m
+[32m+[m[32m                ArrayMap<EditText,String> validationMap = new ArrayMap<>();[m
+[32m+[m[32m                validationMap.put(drinkName,"Please provide a name for your recipe");[m
+[32m+[m[32m                validationMap.put(drinkDescription,"Please provide a description of your recipe");[m
+[32m+[m[32m                validationMap.put(ingredientsData,"Please provide ingredients for your recipe");[m
+[32m+[m[32m                validationMap.put(drinkInstructions,"Please provide instructions for your recipe");[m
+[32m+[m
+[32m+[m[32m                final boolean[] VALIDATION_CHECKS = {isNotBlank(drinkNameValue),[m
+[32m+[m[32m                        isNotBlank(drinkDescriptionValue),[m
+[32m+[m[32m                        isNotBlank(ingredientsDataValue),[m
+[32m+[m[32m                        isNotBlank(drinkInstructionsValue)};[m
+[32m+[m
+[32m+[m[32m                final boolean IMAGE_DATA_UPLOADED = isNotBlank(imageData);[m
+[32m+[m
+[32m+[m[32m                final ArrayMap<EditText,String> FORM_ERRORS = formValidation(validationMap,VALIDATION_CHECKS);[m
+[32m+[m
+[32m+[m[32m                if(view == create && FORM_ERRORS.size() <= 0 && IMAGE_DATA_UPLOADED)[m
+                 {[m
+[31m-                    Recipe newRecipe = new Recipe(getViewString(drinkName.getId()),[m
+[32m+[m[32m                    Recipe newRecipe = new Recipe(drinkNameValue,[m
+                             Calendar.getInstance().getTime(),[m
+[31m-                            getViewString(ingredientsData.getId()),[m
+[31m-                            getViewString(drinkDescription.getId()),[m
+[31m-                            getViewString(drinkInstructions.getId()),[m
+[32m+[m[32m                            ingredientsDataValue,[m
+[32m+[m[32m                            drinkDescriptionValue,[m
+[32m+[m[32m                            drinkInstructionsValue,[m
+                             imageData,categoriesSpinner.getSelectedItemPosition() + 1);[m
+ [m
+                     new NewRecipeAsyncTask(newRecipe).execute();[m
+[36m@@ -96,9 +131,13 @@[m [mpublic class NewRecipeActivity extends UtilityActivity {[m
+                 {[m
+                     requestImageFromGallery();[m
+                 }[m
+[32m+[m[32m                else if(!IMAGE_DATA_UPLOADED)[m
+[32m+[m[32m                {[m
+[32m+[m[32m                    Toast.makeText(getApplicationContext(),"Please upload an image",Toast.LENGTH_SHORT).show();[m
+[32m+[m[32m                }[m
+                 else[m
+                 {[m
+[31m-                    Toast.makeText(getApplicationContext(),"Please Upload an Image",Toast.LENGTH_SHORT).show();[m
+[32m+[m[32m                    buildErrorMessages(FORM_ERRORS);[m
+                 }[m
+             }[m
+         };[m
+[1mdiff --git a/app/src/main/java/com/example/android_project/NewReviewActivity.java b/app/src/main/java/com/example/android_project/NewReviewActivity.java[m
+[1mindex a7dc578..9852b6f 100644[m
+[1m--- a/app/src/main/java/com/example/android_project/NewReviewActivity.java[m
+[1m+++ b/app/src/main/java/com/example/android_project/NewReviewActivity.java[m
+[36m@@ -2,15 +2,19 @@[m [mpackage com.example.android_project;[m
+ [m
+ import android.content.Intent;[m
+ import android.content.SharedPreferences;[m
+[32m+[m[32mimport android.graphics.Color;[m
+ import android.os.AsyncTask;[m
+ import android.support.v7.app.AppCompatActivity;[m
+ import android.os.Bundle;[m
+[32m+[m[32mimport android.util.ArrayMap;[m
+ import android.view.View;[m
+ import android.widget.Button;[m
+ import android.widget.EditText;[m
+ import android.widget.RatingBar;[m
+[32m+[m[32mimport android.widget.Toast;[m
+ [m
+ import java.util.Calendar;[m
+[32m+[m[32mimport java.util.List;[m
+ [m
+ public class NewReviewActivity extends UtilityActivity {[m
+ [m
+[36m@@ -18,6 +22,9 @@[m [mpublic class NewReviewActivity extends UtilityActivity {[m
+     private SharedPreferences sharedPreferences;[m
+     private Intent data;[m
+ [m
+[32m+[m[32m    private String reviewNameValue;[m
+[32m+[m[32m    private String reviewValue;[m
+[32m+[m
+     private RatingBar newRatingBar;[m
+     private EditText newReviewName,newReview;[m
+     private Button createReview;[m
+[36m@@ -43,8 +50,27 @@[m [mpublic class NewReviewActivity extends UtilityActivity {[m
+         createReview.setOnClickListener(new View.OnClickListener() {[m
+             @Override[m
+             public void onClick(View view) {[m
+[31m-                new NewReviewTask().execute();[m
+[31m-                startActivity(new Intent(getApplicationContext(),MainActivity.class));[m
+[32m+[m
+[32m+[m[32m                reviewNameValue = getViewString(newReviewName.getId()).trim();[m
+[32m+[m[32m                reviewValue = getViewString(newReview.getId()).trim();[m
+[32m+[m
+[32m+[m[32m                final boolean[] VALIDATION_CHECKS = {isNotBlank(reviewNameValue),[m
+[32m+[m[32m                                                     isNotBlank(reviewValue)};[m
+[32m+[m
+[32m+[m[32m                ArrayMap<EditText,String> validationMap = new ArrayMap<>();[m
+[32m+[m[32m                validationMap.put(newReviewName,"Please provide a name for your review");[m
+[32m+[m[32m                validationMap.put(newReview,"Please provide a review for this recipe");[m
+[32m+[m
+[32m+[m[32m                final ArrayMap<EditText,String> FORM_ERRORS = formValidation(validationMap,VALIDATION_CHECKS);[m
+[32m+[m
+[32m+[m[32m                if(FORM_ERRORS.size() <= 0) {[m
+[32m+[m[32m                    new NewReviewTask().execute();[m
+[32m+[m[32m                }[m
+[32m+[m[32m                else[m
+[32m+[m[32m                {[m
+[32m+[m[32m                    buildErrorMessages(FORM_ERRORS);[m
+[32m+[m[32m                }[m
+[32m+[m[32m                //Toast.makeText(getApplicationContext(),buildErrorMessages(FORM_ERRORS),Toast.LENGTH_LONG).show();[m
+             }[m
+         });[m
+     }[m
+[36m@@ -59,6 +85,8 @@[m [mpublic class NewReviewActivity extends UtilityActivity {[m
+                                             getViewString(newReview.getId()),[m
+                                             Calendar.getInstance().getTime(),[m
+                                             data.getIntExtra("id",0)));[m
+[32m+[m[32m            startActivity(new Intent(getApplicationContext(), MainActivity.class));[m
+[32m+[m[32m            finish();[m
+             return null;[m
+         }[m
+     }[m
+[1mdiff --git a/app/src/main/java/com/example/android_project/RecipeDetailsActivity.java b/app/src/main/java/com/example/android_project/RecipeDetailsActivity.java[m
+[1mindex 4b6d681..5815663 100644[m
+[1m--- a/app/src/main/java/com/example/android_project/RecipeDetailsActivity.java[m
+[1m+++ b/app/src/main/java/com/example/android_project/RecipeDetailsActivity.java[m
+[36m@@ -18,11 +18,11 @@[m [mpublic class RecipeDetailsActivity extends UtilityActivity {[m
+ [m
+     private AppDatabase db;[m
+     private SharedPreferences sharedPreferences;[m
+[32m+[m[32m    private Intent data;[m
+ [m
+     private TextView name;[m
+     private EditText description,ingredients,dateCreated,instructions;[m
+     private ImageView detailsImage;[m
+[31m-    private Intent data;[m
+ [m
+     @Override[m
+     protected void onCreate(Bundle savedInstanceState) {[m
+[1mdiff --git a/app/src/main/java/com/example/android_project/ReviewUpdateActivity.java b/app/src/main/java/com/example/android_project/ReviewUpdateActivity.java[m
+[1mindex 1a7c675..67afc23 100644[m
+[1m--- a/app/src/main/java/com/example/android_project/ReviewUpdateActivity.java[m
+[1m+++ b/app/src/main/java/com/example/android_project/ReviewUpdateActivity.java[m
+[36m@@ -2,14 +2,19 @@[m [mpackage com.example.android_project;[m
+ [m
+ import android.content.Intent;[m
+ import android.content.SharedPreferences;[m
+[32m+[m[32mimport android.graphics.Color;[m
+ import android.os.AsyncTask;[m
+ import android.support.v7.app.AppCompatActivity;[m
+ import android.os.Bundle;[m
+[32m+[m[32mimport android.util.ArrayMap;[m
+ import android.view.View;[m
+ import android.widget.Button;[m
+ import android.widget.EditText;[m
+ import android.widget.RatingBar;[m
+ import android.widget.TextView;[m
+[32m+[m[32mimport android.widget.Toast;[m
+[32m+[m
+[32m+[m[32mimport java.util.List;[m
+ [m
+ public class ReviewUpdateActivity extends UtilityActivity {[m
+ [m
+[36m@@ -18,6 +23,8 @@[m [mpublic class ReviewUpdateActivity extends UtilityActivity {[m
+     private Intent data;[m
+ [m
+     private String action;[m
+[32m+[m[32m    private String reviewNameValue;[m
+[32m+[m[32m    private String reviewValue;[m
+ [m
+     private TextView typeOfAction;[m
+     private RatingBar updateRatingBar;[m
+[36m@@ -50,7 +57,28 @@[m [mpublic class ReviewUpdateActivity extends UtilityActivity {[m
+         updateReview.setOnClickListener(new View.OnClickListener() {[m
+             @Override[m
+             public void onClick(View view) {[m
+[31m-                new UpdateReviewTask().execute();[m
+[32m+[m
+[32m+[m[32m                reviewNameValue = getViewString(updateReviewName.getId()).trim();[m
+[32m+[m[32m                reviewValue = getViewString(updateDescription.getId()).trim();[m
+[32m+[m
+[32m+[m[32m                final boolean[] VALIDATION_CHECKS = {isNotBlank(reviewNameValue),[m
+[32m+[m[32m                        isNotBlank(reviewValue)};[m
+[32m+[m
+[32m+[m[32m                ArrayMap<EditText,String> validationMap = new ArrayMap<>();[m
+[32m+[m[32m                validationMap.put(updateReviewName,"Please provide a name for your review");[m
+[32m+[m[32m                validationMap.put(updateDescription,"Please provide a review for this recipe");[m
+[32m+[m
+[32m+[m
+[32m+[m[32m                final ArrayMap<EditText,String> FORM_ERRORS = formValidation(validationMap,VALIDATION_CHECKS);[m
+[32m+[m
+[32m+[m[32m                if(FORM_ERRORS.size() <= 0) {[m
+[32m+[m[32m                    new UpdateReviewTask().execute();[m
+[32m+[m[32m                }[m
+[32m+[m[32m                else[m
+[32m+[m[32m                {[m
+[32m+[m[32m                    buildErrorMessages(FORM_ERRORS);[m
+[32m+[m[32m                }[m
+[32m+[m[32m                //Toast.makeText(getApplicationContext(),buildErrorMessages(FORM_ERRORS),Toast.LENGTH_LONG).show();[m
+             }[m
+         });[m
+ [m
+[1mdiff --git a/app/src/main/java/com/example/android_project/ReviewsActivity.java b/app/src/main/java/com/example/android_project/ReviewsActivity.java[m
+[1mindex 23889a9..d6a15de 100644[m
+[1m--- a/app/src/main/java/com/example/android_project/ReviewsActivity.java[m
+[1m+++ b/app/src/main/java/com/example/android_project/ReviewsActivity.java[m
+[36m@@ -21,12 +21,14 @@[m [mimport java.util.Collections;[m
+ [m
+ public class ReviewsActivity extends UtilityActivity {[m
+ [m
+[31m-    private ArrayList<Favorite> favorites = new ArrayList();[m
+     private AppDatabase db;[m
+     private SharedPreferences sharedPreferences;[m
+     private Intent data;[m
+[32m+[m
+     private int sortCode;[m
+ [m
+[32m+[m[32m    private ArrayList<Favorite> favorites = new ArrayList();[m
+[32m+[m
+     private ReviewAdapter reviewAdapter;[m
+     private ListView reviewList;[m
+ [m
+[1mdiff --git a/app/src/main/java/com/example/android_project/SettingsActivity.java b/app/src/main/java/com/example/android_project/SettingsActivity.java[m
+[1mindex 3d02e59..88bd83e 100644[m
+[1m--- a/app/src/main/java/com/example/android_project/SettingsActivity.java[m
+[1m+++ b/app/src/main/java/com/example/android_project/SettingsActivity.java[m
+[36m@@ -13,9 +13,10 @@[m [mimport android.widget.Switch;[m
+ [m
+ public class SettingsActivity extends AppCompatActivity {[m
+ [m
+[32m+[m[32m    private SharedPreferences sharedPreferences;[m
+[32m+[m
+     private int sortCode;[m
+     private boolean themeSelection;[m
+[31m-    private SharedPreferences sharedPreferences;[m
+ [m
+     private Switch setTheme;[m
+     private Spinner sortingOptions;[m
+[1mdiff --git a/app/src/main/java/com/example/android_project/UpdateRecipeActivity.java b/app/src/main/java/com/example/android_project/UpdateRecipeActivity.java[m
+[1mindex 705bd95..20081ac 100644[m
+[1m--- a/app/src/main/java/com/example/android_project/UpdateRecipeActivity.java[m
+[1m+++ b/app/src/main/java/com/example/android_project/UpdateRecipeActivity.java[m
+[36m@@ -3,9 +3,11 @@[m [mpackage com.example.android_project;[m
+ import android.content.Intent;[m
+ import android.content.SharedPreferences;[m
+ import android.graphics.Bitmap;[m
+[32m+[m[32mimport android.graphics.Color;[m
+ import android.os.AsyncTask;[m
+ import android.support.v7.app.AppCompatActivity;[m
+ import android.os.Bundle;[m
+[32m+[m[32mimport android.util.ArrayMap;[m
+ import android.view.View;[m
+ import android.widget.ArrayAdapter;[m
+ import android.widget.Button;[m
+[36m@@ -13,22 +15,30 @@[m [mimport android.widget.EditText;[m
+ import android.widget.ImageView;[m
+ import android.widget.Spinner;[m
+ import android.widget.TextView;[m
+[32m+[m[32mimport android.widget.Toast;[m
+ [m
+ import java.util.Calendar;[m
+[32m+[m[32mimport java.util.List;[m
+ [m
+ public class UpdateRecipeActivity extends UtilityActivity {[m
+ [m
+[32m+[m[32m    private AppDatabase db;[m
+[32m+[m[32m    private SharedPreferences sharedPreferences;[m
+[32m+[m[32m    private Intent data;[m
+[32m+[m
+     private String action;[m
+[32m+[m[32m    private String drinkNameValue;[m
+[32m+[m[32m    private String drinkDescriptionValue;[m
+[32m+[m[32m    private String ingredientsDataValue;[m
+[32m+[m[32m    private String drinkInstructionsValue;[m
+     private String imageData;[m
+[32m+[m
+     private Bitmap imageMap;[m
+ [m
+[31m-    private AppDatabase db;[m
+[31m-    private SharedPreferences sharedPreferences;[m
+[31m-    private Intent data;[m
+[32m+[m[32m    private ArrayAdapter<String> categoriesAdapter;[m
+ [m
+     private TextView typeOfAction;[m
+     private EditText drinkName,drinkDescription,ingredientsData,drinkInstructions;[m
+[31m-    private ArrayAdapter<String> categoriesAdapter;[m
+     private Spinner categoriesSpinner;[m
+     private ImageView drinkImage;[m
+     private Button update,galleryImage;[m
+[36m@@ -56,7 +66,28 @@[m [mpublic class UpdateRecipeActivity extends UtilityActivity {[m
+         View.OnClickListener onClickListener = new View.OnClickListener() {[m
+             @Override[m
+             public void onClick(View view) {[m
+[31m-                if(view == update)[m
+[32m+[m
+[32m+[m[32m                drinkNameValue = getViewString(drinkName.getId()).trim();[m
+[32m+[m[32m                ingredientsDataValue = getViewString(ingredientsData.getId()).trim();[m
+[32m+[m[32m                drinkDescriptionValue = getViewString(drinkDescription.getId()).trim();[m
+[32m+[m[32m                drinkInstructionsValue = getViewString(drinkInstructions.getId()).trim();[m
+[32m+[m
+[32m+[m[32m                final boolean[] VALIDATION_CHECKS = {isNotBlank(drinkNameValue),[m
+[32m+[m[32m                        isNotBlank(drinkDescriptionValue),[m
+[32m+[m[32m                        isNotBlank(ingredientsDataValue),[m
+[32m+[m[32m                        isNotBlank(drinkInstructionsValue)};[m
+[32m+[m
+[32m+[m[32m                final boolean IMAGE_DATA_UPLOADED = isNotBlank(imageData);[m
+[32m+[m
+[32m+[m[32m                ArrayMap<EditText,String> validationMap = new ArrayMap<>();[m
+[32m+[m[32m                validationMap.put(drinkName,"Please provide a name for your recipe");[m
+[32m+[m[32m                validationMap.put(drinkDescription,"Please provide a description of your recipe");[m
+[32m+[m[32m                validationMap.put(ingredientsData,"Please provide ingredients for your recipe");[m
+[32m+[m[32m                validationMap.put(drinkInstructions,"Please provide instructions for your recipe");[m
+[32m+[m
+[32m+[m[32m                final ArrayMap<EditText,String> FORM_ERRORS = formValidation(validationMap,VALIDATION_CHECKS);[m
+[32m+[m
+[32m+[m[32m                if(view == update && FORM_ERRORS.size() <= 0 && IMAGE_DATA_UPLOADED)[m
+                 {[m
+                     new UpdateRecipeTask().execute();[m
+                 }[m
+[36m@@ -64,6 +95,14 @@[m [mpublic class UpdateRecipeActivity extends UtilityActivity {[m
+                 {[m
+                     requestImageFromGallery();[m
+                 }[m
+[32m+[m[32m                else if(!IMAGE_DATA_UPLOADED)[m
+[32m+[m[32m                {[m
+[32m+[m[32m                    Toast.makeText(getApplicationContext(),"Please upload an image",Toast.LENGTH_SHORT).show();[m
+[32m+[m[32m                }[m
+[32m+[m[32m                else[m
+[32m+[m[32m                {[m
+[32m+[m[32m                    buildErrorMessages(FORM_ERRORS);[m
+[32m+[m[32m                }[m
+             }[m
+         };[m
+ [m
+[36m@@ -78,7 +117,7 @@[m [mpublic class UpdateRecipeActivity extends UtilityActivity {[m
+         imageMap = decodeBitmap(data.getByteArrayExtra("imageData"));[m
+         imageData = encodeToBase64(imageMap);[m
+ [m
+[31m-        drinkImage.setImageBitmap(decodeBitmap(data.getByteArrayExtra("imageData")));[m
+[32m+[m[32m        drinkImage.setImageBitmap(imageMap);[m
+ [m
+         update.setOnClickListener(onClickListener);[m
+         galleryImage.setOnClickListener(onClickListener);[m
+[1mdiff --git a/app/src/main/java/com/example/android_project/UtilityActivity.java b/app/src/main/java/com/example/android_project/UtilityActivity.java[m
+[1mindex 40eee67..3582ed0 100644[m
+[1m--- a/app/src/main/java/com/example/android_project/UtilityActivity.java[m
+[1m+++ b/app/src/main/java/com/example/android_project/UtilityActivity.java[m
+[36m@@ -6,9 +6,11 @@[m [mimport android.content.Intent;[m
+ import android.content.SharedPreferences;[m
+ import android.graphics.Bitmap;[m
+ import android.graphics.BitmapFactory;[m
+[32m+[m[32mimport android.graphics.Color;[m
+ import android.net.Uri;[m
+ import android.os.AsyncTask;[m
+ import android.support.v7.app.AppCompatActivity;[m
+[32m+[m[32mimport android.util.ArrayMap;[m
+ import android.util.Base64;[m
+ import android.util.Log;[m
+ import android.view.Menu;[m
+[36m@@ -16,6 +18,7 @@[m [mimport android.view.MenuItem;[m
+ import android.widget.EditText;[m
+ [m
+ import java.io.ByteArrayOutputStream;[m
+[32m+[m[32mimport java.util.ArrayList;[m
+ import java.util.Arrays;[m
+ import java.util.Collections;[m
+ import java.util.List;[m
+[36m@@ -31,6 +34,30 @@[m [mpublic class UtilityActivity extends AppCompatActivity {[m
+     public final int SORT_BY_NAME = 2;[m
+     public final int SORT_BY_RATING = 3;[m
+ [m
+[32m+[m[32m    public ArrayMap<EditText,String> formValidation(final ArrayMap<EditText,String> VALIDATION_MAP, final boolean[] VALIDATION_CHECKS)[m
+[32m+[m[32m    {[m
+[32m+[m[32m        ArrayMap<EditText,String> formErrors = new ArrayMap<>();[m
+[32m+[m[32m        for(int i = 0; i < VALIDATION_CHECKS.length; i++)[m
+[32m+[m[32m        {[m
+[32m+[m[32m            if(!VALIDATION_CHECKS[i])[m
+[32m+[m[32m            {[m
+[32m+[m[32m                EditText failedView = VALIDATION_MAP.keyAt(i);[m
+[32m+[m[32m                formErrors.put(failedView,VALIDATION_MAP.get(failedView));[m
+[32m+[m[32m            }[m
+[32m+[m[32m        }[m
+[32m+[m[32m        return formErrors;[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m[32m    public void buildErrorMessages(final ArrayMap<EditText,String> ERRORS)[m
+[32m+[m[32m    {[m
+[32m+[m[32m        for(int i = 0; i < ERRORS.size(); i++)[m
+[32m+[m[32m        {[m
+[32m+[m[32m            EditText failedView = ERRORS.keyAt(i);[m
+[32m+[m[32m            failedView.setHintTextColor(Color.RED);[m
+[32m+[m[32m            failedView.setHint(ERRORS.get(failedView));[m
+[32m+[m[32m        }[m
+[32m+[m[32m    }[m
+[32m+[m
+     public List reverseList(List listToReverse,int sortCode)[m
+     {[m
+         if(sortCode != NO_SORT)[m
+[1mdiff --git a/app/src/main/res/layout/activity_new_recipe.xml b/app/src/main/res/layout/activity_new_recipe.xml[m
+[1mindex 7cdc3bc..164dcdf 100644[m
+[1m--- a/app/src/main/res/layout/activity_new_recipe.xml[m
+[1m+++ b/app/src/main/res/layout/activity_new_recipe.xml[m
+[36m@@ -5,7 +5,9 @@[m
+     android:layout_width="match_parent"[m
+     android:layout_height="match_parent"[m
+     tools:context="com.example.android_project.RecipeDetailsActivity">>[m
+[32m+[m
+     <LinearLayout[m
+[32m+[m[32m        android:id="@+id/newRecipeLayout"[m
+         android:layout_width="match_parent"[m
+         android:layout_height="match_parent"[m
+         android:orientation="vertical">[m

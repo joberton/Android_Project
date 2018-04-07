@@ -13,9 +13,10 @@ import android.widget.Switch;
 
 public class SettingsActivity extends AppCompatActivity {
 
+    private SharedPreferences sharedPreferences;
+
     private int sortCode;
     private boolean themeSelection;
-    private SharedPreferences sharedPreferences;
 
     private Switch setTheme;
     private Spinner sortingOptions;

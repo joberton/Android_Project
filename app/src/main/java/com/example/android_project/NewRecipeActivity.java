@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.media.Image;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -17,6 +18,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Layout;
 import android.text.format.DateUtils;
+import android.util.ArrayMap;
 import android.util.Base64;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -24,6 +26,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -40,18 +43,26 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 
 public class NewRecipeActivity extends UtilityActivity {
 
+    private AppDatabase db;
+    private SharedPreferences sharedPreferences;
+
+    private ArrayAdapter<String> categoriesAdapter;
+
+    private String drinkNameValue;
+    private String drinkDescriptionValue;
+    private String ingredientsDataValue;
+    private String drinkInstructionsValue;
     private String imageData;
 
     private EditText drinkName,drinkDescription,ingredientsData,drinkInstructions;
     private ImageView drinkImage;
-    private ArrayAdapter<String> categoriesAdapter;
     private Spinner categoriesSpinner;
     private Button galleryImage,create;
-    private AppDatabase db;
-    private SharedPreferences sharedPreferences;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,13 +92,34 @@ public class NewRecipeActivity extends UtilityActivity {
         View.OnClickListener onClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(view == create && isNotBlank(imageData))
+
+                drinkNameValue = getViewString(drinkName.getId()).trim();
+                ingredientsDataValue = getViewString(ingredientsData.getId()).trim();
+                drinkDescriptionValue = getViewString(drinkDescription.getId()).trim();
+                drinkInstructionsValue = getViewString(drinkInstructions.getId()).trim();
+
+                ArrayMap<EditText,String> validationMap = new ArrayMap<>();
+                validationMap.put(drinkName,"Please provide a name for your recipe");
+                validationMap.put(drinkDescription,"Please provide a description of your recipe");
+                validationMap.put(ingredientsData,"Please provide ingredients for your recipe");
+                validationMap.put(drinkInstructions,"Please provide instructions for your recipe");
+
+                final boolean[] VALIDATION_CHECKS = {isNotBlank(drinkNameValue),
+                        isNotBlank(drinkDescriptionValue),
+                        isNotBlank(ingredientsDataValue),
+                        isNotBlank(drinkInstructionsValue)};
+
+                final boolean IMAGE_DATA_UPLOADED = isNotBlank(imageData);
+
+                final ArrayMap<EditText,String> FORM_ERRORS = formValidation(validationMap,VALIDATION_CHECKS);
+
+                if(view == create && FORM_ERRORS.size() <= 0 && IMAGE_DATA_UPLOADED)
                 {
-                    Recipe newRecipe = new Recipe(getViewString(drinkName.getId()),
+                    Recipe newRecipe = new Recipe(drinkNameValue,
                             Calendar.getInstance().getTime(),
-                            getViewString(ingredientsData.getId()),
-                            getViewString(drinkDescription.getId()),
-                            getViewString(drinkInstructions.getId()),
+                            ingredientsDataValue,
+                            drinkDescriptionValue,
+                            drinkInstructionsValue,
                             imageData,categoriesSpinner.getSelectedItemPosition() + 1);
 
                     new NewRecipeAsyncTask(newRecipe).execute();
@@ -96,9 +128,13 @@ public class NewRecipeActivity extends UtilityActivity {
                 {
                     requestImageFromGallery();
                 }
+                else if(!IMAGE_DATA_UPLOADED)
+                {
+                    Toast.makeText(getApplicationContext(),"Please upload an image",Toast.LENGTH_SHORT).show();
+                }
                 else
                 {
-                    Toast.makeText(getApplicationContext(),"Please Upload an Image",Toast.LENGTH_SHORT).show();
+                    buildErrorMessages(FORM_ERRORS);
                 }
             }
         };

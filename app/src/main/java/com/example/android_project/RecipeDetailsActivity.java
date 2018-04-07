@@ -18,11 +18,11 @@ public class RecipeDetailsActivity extends UtilityActivity {
 
     private AppDatabase db;
     private SharedPreferences sharedPreferences;
+    private Intent data;
 
     private TextView name;
     private EditText description,ingredients,dateCreated,instructions;
     private ImageView detailsImage;
-    private Intent data;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
