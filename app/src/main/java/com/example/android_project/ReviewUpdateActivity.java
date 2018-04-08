@@ -64,21 +64,13 @@ public class ReviewUpdateActivity extends UtilityActivity {
                 final boolean[] VALIDATION_CHECKS = {isNotBlank(reviewNameValue),
                         isNotBlank(reviewValue)};
 
-                ArrayMap<EditText,String> validationMap = new ArrayMap<>();
-                validationMap.put(updateReviewName,"Please provide a name for your review");
-                validationMap.put(updateDescription,"Please provide a review for this recipe");
+                final EditText[] FORM_EDIT_TEXTS = {updateReviewName,updateDescription};
 
-
-                final ArrayMap<EditText,String> FORM_ERRORS = formValidation(validationMap,VALIDATION_CHECKS);
+                final List<EditText> FORM_ERRORS = formValidation(FORM_EDIT_TEXTS,VALIDATION_CHECKS,REVIEWS_ERROR_MESSAGES);
 
                 if(FORM_ERRORS.size() <= 0) {
                     new UpdateReviewTask().execute();
                 }
-                else
-                {
-                    buildErrorMessages(FORM_ERRORS);
-                }
-                //Toast.makeText(getApplicationContext(),buildErrorMessages(FORM_ERRORS),Toast.LENGTH_LONG).show();
             }
         });
 

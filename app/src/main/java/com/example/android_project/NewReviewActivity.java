@@ -57,20 +57,13 @@ public class NewReviewActivity extends UtilityActivity {
                 final boolean[] VALIDATION_CHECKS = {isNotBlank(reviewNameValue),
                                                      isNotBlank(reviewValue)};
 
-                ArrayMap<EditText,String> validationMap = new ArrayMap<>();
-                validationMap.put(newReviewName,"Please provide a name for your review");
-                validationMap.put(newReview,"Please provide a review for this recipe");
+                final EditText[] FORM_EDIT_TEXTS = {newReviewName,newReview};
 
-                final ArrayMap<EditText,String> FORM_ERRORS = formValidation(validationMap,VALIDATION_CHECKS);
+                final List<EditText> FORM_ERRORS = formValidation(FORM_EDIT_TEXTS,VALIDATION_CHECKS,REVIEWS_ERROR_MESSAGES);
 
                 if(FORM_ERRORS.size() <= 0) {
                     new NewReviewTask().execute();
                 }
-                else
-                {
-                    buildErrorMessages(FORM_ERRORS);
-                }
-                //Toast.makeText(getApplicationContext(),buildErrorMessages(FORM_ERRORS),Toast.LENGTH_LONG).show();
             }
         });
     }

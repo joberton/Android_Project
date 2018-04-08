@@ -67,25 +67,21 @@ public class UpdateRecipeActivity extends UtilityActivity {
             @Override
             public void onClick(View view) {
 
-                drinkNameValue = getViewString(drinkName.getId()).trim();
-                ingredientsDataValue = getViewString(ingredientsData.getId()).trim();
-                drinkDescriptionValue = getViewString(drinkDescription.getId()).trim();
-                drinkInstructionsValue = getViewString(drinkInstructions.getId()).trim();
+                drinkNameValue = getViewString(drinkName.getId());
+                ingredientsDataValue = getViewString(ingredientsData.getId());
+                drinkDescriptionValue = getViewString(drinkDescription.getId());
+                drinkInstructionsValue = getViewString(drinkInstructions.getId());
 
-                final boolean[] VALIDATION_CHECKS = {isNotBlank(drinkNameValue),
-                        isNotBlank(drinkDescriptionValue),
-                        isNotBlank(ingredientsDataValue),
-                        isNotBlank(drinkInstructionsValue)};
+                final boolean[] VALIDATION_CHECKS = {isNotBlank(drinkNameValue.trim()),
+                        isNotBlank(drinkDescriptionValue.trim()),
+                        isNotBlank(ingredientsDataValue.trim()),
+                        isNotBlank(drinkInstructionsValue.trim())};
+
+                final EditText[] FORM_EDIT_TEXTS = {drinkName,ingredientsData,drinkDescription,drinkInstructions};
 
                 final boolean IMAGE_DATA_UPLOADED = isNotBlank(imageData);
 
-                ArrayMap<EditText,String> validationMap = new ArrayMap<>();
-                validationMap.put(drinkName,"Please provide a name for your recipe");
-                validationMap.put(drinkDescription,"Please provide a description of your recipe");
-                validationMap.put(ingredientsData,"Please provide ingredients for your recipe");
-                validationMap.put(drinkInstructions,"Please provide instructions for your recipe");
-
-                final ArrayMap<EditText,String> FORM_ERRORS = formValidation(validationMap,VALIDATION_CHECKS);
+                final List<EditText> FORM_ERRORS = formValidation(FORM_EDIT_TEXTS,VALIDATION_CHECKS,RECIPES_ERROR_MESSAGES);
 
                 if(view == update && FORM_ERRORS.size() <= 0 && IMAGE_DATA_UPLOADED)
                 {
@@ -98,10 +94,6 @@ public class UpdateRecipeActivity extends UtilityActivity {
                 else if(!IMAGE_DATA_UPLOADED)
                 {
                     Toast.makeText(getApplicationContext(),"Please upload an image",Toast.LENGTH_SHORT).show();
-                }
-                else
-                {
-                    buildErrorMessages(FORM_ERRORS);
                 }
             }
         };

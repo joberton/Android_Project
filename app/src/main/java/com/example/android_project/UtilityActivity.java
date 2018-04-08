@@ -27,6 +27,14 @@ public class UtilityActivity extends AppCompatActivity {
 
     //global utility functions for the application go here...
     //such as parsing data
+    public final String[] RECIPES_ERROR_MESSAGES = {"Please provide a name for your recipe",
+                                                    "Please provide a description of your recipe",
+                                                    "Please provide ingredients for your recipe",
+                                                    "Please provide instructions for your recipe"};
+
+    public final String[] REVIEWS_ERROR_MESSAGES = {"Please provide a name for your review",
+                                                     "Please provide a description for your review"};
+
     public final int REQUEST_IMAGE = 1;
 
     public final int NO_SORT = 0;
@@ -34,28 +42,19 @@ public class UtilityActivity extends AppCompatActivity {
     public final int SORT_BY_NAME = 2;
     public final int SORT_BY_RATING = 3;
 
-    public ArrayMap<EditText,String> formValidation(final ArrayMap<EditText,String> VALIDATION_MAP, final boolean[] VALIDATION_CHECKS)
+    public List<EditText> formValidation(final EditText[] FORM_EDIT_TEXTS, final boolean[] VALIDATION_CHECKS,final String[] ERROR_MESSAGES)
     {
-        ArrayMap<EditText,String> formErrors = new ArrayMap<>();
+        List<EditText> formErrors = new ArrayList<>();
         for(int i = 0; i < VALIDATION_CHECKS.length; i++)
         {
             if(!VALIDATION_CHECKS[i])
             {
-                EditText failedView = VALIDATION_MAP.keyAt(i);
-                formErrors.put(failedView,VALIDATION_MAP.get(failedView));
+                FORM_EDIT_TEXTS[i].setHintTextColor(Color.RED);
+                FORM_EDIT_TEXTS[i].setHint(ERROR_MESSAGES[i]);
+                formErrors.add(FORM_EDIT_TEXTS[i]);
             }
         }
         return formErrors;
-    }
-
-    public void buildErrorMessages(final ArrayMap<EditText,String> ERRORS)
-    {
-        for(int i = 0; i < ERRORS.size(); i++)
-        {
-            EditText failedView = ERRORS.keyAt(i);
-            failedView.setHintTextColor(Color.RED);
-            failedView.setHint(ERRORS.get(failedView));
-        }
     }
 
     public List reverseList(List listToReverse,int sortCode)
@@ -74,7 +73,7 @@ public class UtilityActivity extends AppCompatActivity {
 
     public boolean isNotBlank(String data)
     {
-        return data != null && data.length() > 0;
+        return data != null && !data.isEmpty();
     }
 
     public double parseDoubleData(int id)
