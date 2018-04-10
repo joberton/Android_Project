@@ -23,6 +23,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import okhttp3.Request;
+
 public class UtilityActivity extends AppCompatActivity {
 
     //global utility functions for the application go here...

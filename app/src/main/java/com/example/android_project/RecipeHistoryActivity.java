@@ -3,10 +3,12 @@ package com.example.android_project;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,19 +18,37 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class RecipeHistoryActivity extends AppCompatActivity {
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.X509TrustManager;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.HttpUrl;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
+public class RecipeHistoryActivity extends UtilityActivity {
 
     private SharedPreferences sharedPreferences;
+
+    private HttpUrl.Builder urlBuilder;
+    private OkHttpClient client = new OkHttpClient();
+    private Request request;
+
+    private static JSONObject apiResponse;
 
     private ArrayList<DrinkHistory> drinkHistoryList = new ArrayList();
     private DrinkHistoryAdapter drinkHistoryAdapter;
     private ListView historyList;
 
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         sharedPreferences = getSharedPreferences("myPerfs",MODE_PRIVATE);
@@ -37,6 +57,10 @@ public class RecipeHistoryActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_history);
+
+        urlBuilder = HttpRequestHelper.buildHttpUrl("https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=13060");
+        request = HttpRequestHelper.buildNewHttpRequester(urlBuilder.build().toString());
+        apiResponse = HttpRequestHelper.makeRequest(request,client);
 
         historyList = findViewById(R.id.historyList);
 
@@ -100,5 +124,45 @@ public class RecipeHistoryActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.just_settings_menu,menu);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    private static class HttpRequestHelper
+    {
+        private static JSONObject helperApiResponse = null;
+
+        public static HttpUrl.Builder buildHttpUrl(String url)
+        {
+            return HttpUrl.parse(url).newBuilder();
+        }
+
+        public static Request buildNewHttpRequester(String url)
+        {
+            return new Request.Builder().url(url).build();
+        }
+
+        public static JSONObject makeRequest(final Request request, final OkHttpClient client)
+        {
+            client.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    Log.d("Request_Failure",e.getMessage());
+                    call.cancel();
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    String stringResponse = response.body().string();
+                    try {
+                        helperApiResponse = new JSONObject(stringResponse);
+                        Log.d("Response_Success",helperApiResponse.toString());
+                    }
+                    catch(Exception e)
+                    {
+                       Log.d("Response_Failure",e.getMessage());
+                    }
+                }
+            });
+            return helperApiResponse;
+        }
     }
 }

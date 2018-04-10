@@ -63,6 +63,14 @@ public class UpdateRecipeActivity extends UtilityActivity {
 
         update = findViewById(R.id.createRecipe);
 
+        drinkName = findViewById(R.id.newRecipeName);
+        drinkImage = findViewById(R.id.uploadedImage);
+        drinkDescription = findViewById(R.id.newRecipeDescription);
+        ingredientsData = findViewById(R.id.ingredientsData);
+        drinkInstructions = findViewById(R.id.newRecipeInstructions);
+        categoriesSpinner = findViewById(R.id.categoriesSpinner);
+        galleryImage = findViewById(R.id.galleryImage);
+
         View.OnClickListener onClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -97,14 +105,6 @@ public class UpdateRecipeActivity extends UtilityActivity {
                 }
             }
         };
-
-        drinkName = findViewById(R.id.newRecipeName);
-        drinkImage = findViewById(R.id.uploadedImage);
-        drinkDescription = findViewById(R.id.newRecipeDescription);
-        ingredientsData = findViewById(R.id.ingredientsData);
-        drinkInstructions = findViewById(R.id.newRecipeInstructions);
-        categoriesSpinner = findViewById(R.id.categoriesSpinner);
-        galleryImage = findViewById(R.id.galleryImage);
 
         imageMap = decodeBitmap(data.getByteArrayExtra("imageData"));
         imageData = encodeToBase64(imageMap);
