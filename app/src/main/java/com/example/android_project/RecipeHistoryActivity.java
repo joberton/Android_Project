@@ -3,6 +3,8 @@ package com.example.android_project;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -39,11 +41,11 @@ public class RecipeHistoryActivity extends UtilityActivity {
 
     private SharedPreferences sharedPreferences;
 
+    private boolean wifiConnection;
     private HttpUrl.Builder urlBuilder;
     private OkHttpClient client = new OkHttpClient();
     private Request request;
-
-    private static JSONObject apiResponse;
+    private JSONObject apiResponse;
 
     private ArrayList<DrinkHistory> drinkHistoryList = new ArrayList();
     private DrinkHistoryAdapter drinkHistoryAdapter;
@@ -58,18 +60,48 @@ public class RecipeHistoryActivity extends UtilityActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_history);
 
-        urlBuilder = HttpRequestHelper.buildHttpUrl("https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=13060");
-        request = HttpRequestHelper.buildNewHttpRequester(urlBuilder.build().toString());
-        apiResponse = HttpRequestHelper.makeRequest(request,client);
+        wifiConnection = checkForWifiConnection();
+
+        //test apis
+        //https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=13060
+        //https://swapi.co/api/people/1/
+        urlBuilder = HttpRequestHelper.buildHttpUrl("https://swapi.co/api/people/1/");
+        request = HttpRequestHelper.buildNewHttpRequester(urlBuilder);
 
         historyList = findViewById(R.id.historyList);
 
-        drinkHistoryList.addAll(Arrays.asList(new DrinkHistory("Vodka","Talk about the history and how it refers to drink"),
-                                          new DrinkHistory("Gin","Talk about the history and how it refers to drink"),
-                                          new DrinkHistory("Rum","Talk about the history and how it refers to drink")));
-        drinkHistoryAdapter = new DrinkHistoryAdapter(getApplicationContext(),R.layout.drink_history,drinkHistoryList);
+        if(wifiConnection) {
+            client.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    Log.d("Request_Failure",e.getMessage());
+                    call.cancel();
+                }
 
-        historyList.setAdapter(drinkHistoryAdapter);
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    final String stringResponse = response.body().string();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                apiResponse = new JSONObject(stringResponse);
+                                String name = apiResponse.getString("name");
+                                String height = apiResponse.getString("height");
+                                drinkHistoryList.add(new DrinkHistory(name, height));
+                                drinkHistoryAdapter = new DrinkHistoryAdapter(getApplicationContext(), R.layout.drink_history, drinkHistoryList);
+                                historyList.setAdapter(drinkHistoryAdapter);
+                            }
+                            catch (Exception e)
+                            {
+                                Log.e("Response_Failure",e.getMessage());
+                            }
+                        }
+                    });
+                    Log.d("Response_Success",stringResponse);
+                }
+            });
+        }
     }
 
     private class DrinkHistoryAdapter extends ArrayAdapter<DrinkHistory>
@@ -128,41 +160,15 @@ public class RecipeHistoryActivity extends UtilityActivity {
 
     private static class HttpRequestHelper
     {
-        private static JSONObject helperApiResponse = null;
-
         public static HttpUrl.Builder buildHttpUrl(String url)
         {
             return HttpUrl.parse(url).newBuilder();
         }
 
-        public static Request buildNewHttpRequester(String url)
+        public static Request buildNewHttpRequester(HttpUrl.Builder builder)
         {
+            String url = builder.build().toString();
             return new Request.Builder().url(url).build();
-        }
-
-        public static JSONObject makeRequest(final Request request, final OkHttpClient client)
-        {
-            client.newCall(request).enqueue(new Callback() {
-                @Override
-                public void onFailure(Call call, IOException e) {
-                    Log.d("Request_Failure",e.getMessage());
-                    call.cancel();
-                }
-
-                @Override
-                public void onResponse(Call call, Response response) throws IOException {
-                    String stringResponse = response.body().string();
-                    try {
-                        helperApiResponse = new JSONObject(stringResponse);
-                        Log.d("Response_Success",helperApiResponse.toString());
-                    }
-                    catch(Exception e)
-                    {
-                       Log.d("Response_Failure",e.getMessage());
-                    }
-                }
-            });
-            return helperApiResponse;
         }
     }
 }

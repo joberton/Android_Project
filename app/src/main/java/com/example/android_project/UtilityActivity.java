@@ -7,6 +7,8 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
@@ -43,6 +45,13 @@ public class UtilityActivity extends AppCompatActivity {
     public final int SORT_BY_DATE = 1;
     public final int SORT_BY_NAME = 2;
     public final int SORT_BY_RATING = 3;
+
+    public boolean checkForWifiConnection()
+    {
+        ConnectivityManager cm = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeWork = cm.getActiveNetworkInfo();
+        return activeWork != null && activeWork.isConnectedOrConnecting();
+    }
 
     public List<EditText> formValidation(final EditText[] FORM_EDIT_TEXTS, final boolean[] VALIDATION_CHECKS,final String[] ERROR_MESSAGES)
     {
