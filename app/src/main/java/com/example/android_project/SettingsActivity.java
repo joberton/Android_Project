@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
-import android.widget.CompoundButton;
 import android.widget.Spinner;
 import android.widget.Switch;
 
@@ -62,8 +61,8 @@ public class SettingsActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId())
         {
-            case R.id.historyOfIngredients:
-                startActivity(new Intent(getApplicationContext(),RecipeHistoryActivity.class));
+            case R.id.recipesToGo:
+                startActivity(new Intent(getApplicationContext(),QuickRecipesActivity.class));
                 break;
             case android.R.id.home:
                 persistSettings();

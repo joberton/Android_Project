@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/historyOfIngredients" android:title="@string/ingredientsHistory"/>
+    <item android:id="@+id/recipesToGo" android:title="@string/quickRecipes"/>
     <item android:id="@+id/settings" android:title="@string/applicationSettings"/>
 </menu>

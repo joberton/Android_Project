@@ -23,7 +23,7 @@
     <string name="review">Review: </string>
     <string name="allRecipes">Your Recipes: </string>
     <string name="galleryImage">Gallery Image</string>
-    <string name="ingredientsHistory">Drink History</string>
+    <string name="quickRecipes">Quick Recipes</string>
     <string name="history">History: </string>
     <string-array name="sortingOptions">
         <item>Not Sorted</item>

@@ -1,31 +1,23 @@
 package com.example.android_project;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
-import android.util.ArrayMap;
 import android.util.Base64;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
-import okhttp3.Request;
 
 public class UtilityActivity extends AppCompatActivity {
 
@@ -157,8 +149,8 @@ public class UtilityActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId())
         {
-            case R.id.historyOfIngredients:
-                startActivity(new Intent(getApplicationContext(),RecipeHistoryActivity.class));
+            case R.id.recipesToGo:
+                startActivity(new Intent(getApplicationContext(),QuickRecipesActivity.class));
                 break;
             case R.id.settings:
                 startActivity(new Intent(getApplicationContext(),SettingsActivity.class));

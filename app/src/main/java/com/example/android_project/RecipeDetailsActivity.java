@@ -2,12 +2,8 @@ package com.example.android_project;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
@@ -74,8 +70,8 @@ public class RecipeDetailsActivity extends UtilityActivity {
             case R.id.deleteRecipe:
                 new DeleteRecipeTask().execute();
                 break;
-            case R.id.historyOfIngredients:
-                startActivity(new Intent(getApplicationContext(),RecipeHistoryActivity.class));
+            case R.id.recipesToGo:
+                startActivity(new Intent(getApplicationContext(),QuickRecipesActivity.class));
                 break;
             case R.id.settings:
                 startActivity(new Intent(getApplicationContext(),SettingsActivity.class));
