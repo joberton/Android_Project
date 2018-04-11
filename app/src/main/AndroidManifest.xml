@@ -47,7 +47,9 @@
         <activity
             android:name=".QuickRecipesActivity"
             android:parentActivityName=".MainActivity" />
-        <activity android:name=".QuickRecipesDetailsActivity"></activity>
+        <activity
+            android:name=".QuickRecipesDetailsActivity"
+            android:parentActivityName=".MainActivity"/>
     </application>
 
 </manifest>

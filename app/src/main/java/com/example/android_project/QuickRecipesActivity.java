@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -89,6 +90,23 @@ public class QuickRecipesActivity extends UtilityActivity {
         historyList = findViewById(R.id.historyList);
         progressBar = findViewById(R.id.apiProgressBar);
 
+        historyList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                QuickRecipe quickRecipe = (QuickRecipe) adapterView.getItemAtPosition(i);
+                Intent data = new Intent(getApplicationContext(),QuickRecipesDetailsActivity.class);
+
+                String base64Data = encodeToBase64(quickRecipe.getImageData());
+
+                data.putExtra("drinkName", quickRecipe.getDrinkName());
+                data.putExtra("drinkDateCreated", quickRecipe.getDateCreated().toString());
+                data.putExtra("drinkInstructions",quickRecipe.getDrinkInstructions());
+                data.putExtra("drinkImage", decodeBase64(base64Data));
+
+                startActivity(data);
+            }
+        });
+
         if(wifiConnection) {
             client.newCall(request).enqueue(new Callback() {
                 @Override
@@ -155,7 +173,7 @@ public class QuickRecipesActivity extends UtilityActivity {
             dateCreated = view.findViewById(R.id.apiDateCreated);
             apiImageView = view.findViewById(R.id.apiDrinkImage);
 
-            String truncatedInstructions = i.getDrinkHistory();
+            String truncatedInstructions = i.getDrinkInstructions();
 
             apiImageView.setImageBitmap(Bitmap.createScaledBitmap(i.getImageData(),250,250,false));
             dateCreated.setText(getString(R.string.dateCreatedTextView).concat(i.getDateCreated().toString()));
@@ -214,7 +232,7 @@ public class QuickRecipesActivity extends UtilityActivity {
                     String drinkName = getJsonDrinkKeyValue(drinkItem,"strDrink");
                     String drinkInstructions = getJsonDrinkKeyValue(drinkItem,"strInstructions");
 
-                    SimpleDateFormat dateCreatedFormat = new SimpleDateFormat("yyyy-MM-dd HH:MM:ss");
+                    SimpleDateFormat dateCreatedFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                     Date dateCreated = dateCreatedFormat.parse(getJsonDrinkKeyValue(drinkItem,"dateModified"));
 
                     drinkHistories.add(new QuickRecipe(drinkName,drinkInstructions,dateCreated,imageData));

@@ -33,12 +33,12 @@ public class QuickRecipe {
         this.drinkName = drinkName;
     }
 
-    public String getDrinkHistory()
+    public String getDrinkInstructions()
     {
         return drinkHistory;
     }
 
-    public void setDrinkHistory(String drinkHistory)
+    public void setDrinkInstructions(String drinkHistory)
     {
         this.drinkHistory = drinkHistory;
     }
