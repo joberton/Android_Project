@@ -87,7 +87,7 @@ public class RecipeDetailsActivity extends UtilityActivity {
                 startActivity(reviewData);
                 break;
             case android.R.id.home:
-                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                startActivity(new Intent(getApplicationContext(),MainActivity.class));
                 break;
         }
         return true;

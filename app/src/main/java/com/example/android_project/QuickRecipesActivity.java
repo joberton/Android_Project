@@ -54,8 +54,11 @@ public class QuickRecipesActivity extends UtilityActivity {
     private SharedPreferences sharedPreferences;
 
     private static final int DRINK_REQUEST_LIMIT = 15;
-    private static final int INSTRUCTIONS_MAX_LIMIT = 50;
+    private static final int INSTRUCTIONS_MAX_LIMIT = 35;
 
+    //test apis
+    //https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=13060
+    //https://swapi.co/api/people/1/
     private static final String BASE_URL = "https://www.thecocktaildb.com/api/json/v1/1/";
 
     private boolean wifiConnection;
@@ -63,6 +66,8 @@ public class QuickRecipesActivity extends UtilityActivity {
     private OkHttpClient client = new OkHttpClient();
     private Request request;
     private JSONObject apiResponse;
+
+    private TextView connectionStatus;
 
     private ArrayList<QuickRecipe> quickRecipeList = new ArrayList();
     private QuickRecipeAdapter quickRecipeAdapter;
@@ -81,14 +86,12 @@ public class QuickRecipesActivity extends UtilityActivity {
 
         wifiConnection = checkForWifiConnection();
 
-        //test apis
-        //https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=13060
-        //https://swapi.co/api/people/1/
         urlBuilder = HttpRequestHelper.buildHttpUrl(BASE_URL + "filter.php?a=Alcoholic");
         request = HttpRequestHelper.buildNewHttpRequester(urlBuilder);
 
         historyList = findViewById(R.id.historyList);
         progressBar = findViewById(R.id.apiProgressBar);
+        connectionStatus = findViewById(R.id.connectionStatus);
 
         historyList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -101,13 +104,15 @@ public class QuickRecipesActivity extends UtilityActivity {
                 data.putExtra("drinkName", quickRecipe.getDrinkName());
                 data.putExtra("drinkDateCreated", quickRecipe.getDateCreated().toString());
                 data.putExtra("drinkInstructions",quickRecipe.getDrinkInstructions());
-                data.putExtra("drinkImage", decodeBase64(base64Data));
+                data.putExtra("imageData", decodeBase64(base64Data));
 
                 startActivity(data);
             }
         });
 
         if(wifiConnection) {
+            connectionStatus.setText(getString(R.string.loadingStatus));
+            progressBar.setVisibility(View.VISIBLE);
             client.newCall(request).enqueue(new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
@@ -127,6 +132,7 @@ public class QuickRecipesActivity extends UtilityActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
+                                connectionStatus.setVisibility(View.GONE);
                                 progressBar.setVisibility(View.GONE);
                                 quickRecipeAdapter = new QuickRecipeAdapter(getApplicationContext(), R.layout.quick_recipes, quickRecipeList);
                                 historyList.setAdapter(quickRecipeAdapter);

@@ -10,9 +10,12 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
+
+import com.google.android.gms.security.ProviderInstaller;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
@@ -37,6 +40,21 @@ public class UtilityActivity extends AppCompatActivity {
     public final int SORT_BY_DATE = 1;
     public final int SORT_BY_NAME = 2;
     public final int SORT_BY_RATING = 3;
+
+    public void checkForTls()
+    {
+        ProviderInstaller.installIfNeededAsync(this, new ProviderInstaller.ProviderInstallListener() {
+            @Override
+            public void onProviderInstalled() {
+                Log.i("ProviderInstall_success","Update installed successfully");
+            }
+
+            @Override
+            public void onProviderInstallFailed(int i, Intent intent) {
+                Log.d("ProviderInstall_failure", "An Error was encountered while requesting provider installer ");
+            }
+        });
+    }
 
     public boolean checkForWifiConnection()
     {
@@ -156,7 +174,7 @@ public class UtilityActivity extends AppCompatActivity {
                 startActivity(new Intent(getApplicationContext(),SettingsActivity.class));
                 break;
             case android.R.id.home:
-                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                startActivity(new Intent(getApplicationContext(),MainActivity.class));
                 break;
         }
         return true;

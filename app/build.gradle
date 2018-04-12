@@ -26,6 +26,8 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
 
+    implementation "com.google.android.gms:play-services-safetynet:12.0.0"
+
     // ViewModel and LiveData
     implementation "android.arch.lifecycle:extensions:1.1.0"
     // alternatively, just ViewModel

@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -44,6 +45,20 @@ public class QuickRecipesDetailsActivity extends UtilityActivity {
         apiDrinkName.setText(data.getStringExtra("drinkName"));
         apiDrinkCreated.setText(data.getStringExtra("drinkDateCreated"));
         apiDrinkInstructions.setText(data.getStringExtra("drinkInstructions"));
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId())
+        {
+            case R.id.settings:
+                startActivity(new Intent(getApplicationContext(),SettingsActivity.class));
+                break;
+            case android.R.id.home:
+                onBackPressed();
+                break;
+        }
+        return true;
     }
 
     @Override

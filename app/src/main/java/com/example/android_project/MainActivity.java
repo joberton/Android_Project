@@ -19,6 +19,8 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.android.gms.security.ProviderInstaller;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -46,6 +48,8 @@ public class MainActivity extends UtilityActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        checkForTls();
 
         db = AppDatabase.getDatabaseContext(this);
         list = findViewById(R.id.list);

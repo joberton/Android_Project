@@ -24,6 +24,8 @@
     <string name="allRecipes">Your Recipes: </string>
     <string name="galleryImage">Gallery Image</string>
     <string name="quickRecipes">Quick Recipes</string>
+    <string name="connectionStatus">Your Offline Please Try Again When You Have An Internet Connection</string>
+    <string name="loadingStatus">Loading Recipes Now!!!</string>
     <string name="history">History: </string>
     <string-array name="sortingOptions">
         <item>Not Sorted</item>

@@ -14,11 +14,20 @@
         android:text="@string/quickRecipes"
         android:textAppearance="@style/TextAppearance.AppCompat.Display2" />
 
+    <TextView
+        android:id="@+id/connectionStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/connectionStatus"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title"
+        android:visibility="visible" />
+
     <ProgressBar
         android:id="@+id/apiProgressBar"
         style="?android:attr/progressBarStyle"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
 
     <ListView
         android:id="@+id/historyList"

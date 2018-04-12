@@ -69,7 +69,7 @@ public class ReviewDetailsActivity extends UtilityActivity {
                 new DeleteReviewTask().execute();
                 break;
             case android.R.id.home:
-                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                startActivity(new Intent(getApplicationContext(),MainActivity.class));
                 break;
         }
         return true;
