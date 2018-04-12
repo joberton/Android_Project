@@ -4,13 +4,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
-public class ReviewDetailsActivity extends UtilityActivity {
+public class ReviewDetailsActivity extends AppCompatActivity {
 
     private AppDatabase db;
     private SharedPreferences sharedPreferences;

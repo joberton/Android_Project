@@ -100,14 +100,14 @@ public class NewRecipeActivity extends UtilityActivity {
 
                 final EditText[] FORM_EDIT_TEXTS = {drinkName,drinkDescription,ingredientsData,drinkInstructions};
 
-                final boolean[] VALIDATION_CHECKS = {isNotBlank(drinkNameValue.trim()),
-                        isNotBlank(drinkDescriptionValue.trim()),
-                        isNotBlank(ingredientsDataValue.trim()),
-                        isNotBlank(drinkInstructionsValue.trim())};
+                final boolean[] VALIDATION_CHECKS = {Utility.isNotBlank(drinkNameValue.trim()),
+                        Utility.isNotBlank(drinkDescriptionValue.trim()),
+                        Utility.isNotBlank(ingredientsDataValue.trim()),
+                        Utility.isNotBlank(drinkInstructionsValue.trim())};
 
-                final boolean IMAGE_DATA_UPLOADED = isNotBlank(imageData);
+                final boolean IMAGE_DATA_UPLOADED = Utility.isNotBlank(imageData);
 
-                final List<EditText> FORM_ERRORS = formValidation(FORM_EDIT_TEXTS,VALIDATION_CHECKS,RECIPES_ERROR_MESSAGES);
+                final List<EditText> FORM_ERRORS = Utility.formValidation(FORM_EDIT_TEXTS,VALIDATION_CHECKS,Utility.RECIPES_ERROR_MESSAGES);
 
                 if(view == create && FORM_ERRORS.size() <= 0 && IMAGE_DATA_UPLOADED)
                 {
@@ -141,7 +141,7 @@ public class NewRecipeActivity extends UtilityActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         imageData = onImageGalleryResult(requestCode,data);
-        drinkImage.setImageBitmap(decodeBitmap(decodeBase64(imageData)));
+        drinkImage.setImageBitmap(Utility.decodeBitmap(Utility.decodeBase64(imageData)));
         drinkImage.setVisibility(View.VISIBLE);
     }
 

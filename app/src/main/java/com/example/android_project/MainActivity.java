@@ -49,7 +49,7 @@ public class MainActivity extends UtilityActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        checkForTls();
+        Utility.checkForTls(this);
 
         db = AppDatabase.getDatabaseContext(this);
         list = findViewById(R.id.list);
@@ -62,7 +62,7 @@ public class MainActivity extends UtilityActivity {
 
                 data.putExtra("id",selectedRecipe.getRecipeId());
                 data.putExtra("name",selectedRecipe.getName());
-                data.putExtra("imageData",decodeBase64(selectedRecipe.getImageData()));
+                data.putExtra("imageData",Utility.decodeBase64(selectedRecipe.getImageData()));
                 data.putExtra("ingredients",selectedRecipe.getRecipeIngredients());
                 data.putExtra("description",selectedRecipe.getDescription());
                 data.putExtra("dateCreated",selectedRecipe.getDateCreated().toString());
@@ -91,11 +91,11 @@ public class MainActivity extends UtilityActivity {
             recipes.addAll(db.recipeDao().getAll());
             switch(sortCode)
             {
-                case SORT_BY_DATE:
+                case Utility.SORT_BY_DATE:
                     Collections.sort(recipes);
-                    reverseList(recipes,sortCode);
+                    Utility.reverseList(recipes,sortCode);
                     break;
-                case SORT_BY_NAME:
+                case Utility.SORT_BY_NAME:
                     Collections.sort(recipes,Recipe.Comparators.NAME);
                     break;
             }
@@ -135,7 +135,7 @@ public class MainActivity extends UtilityActivity {
             dateCreated = view.findViewById(R.id.dateCreated);
 
 
-            Bitmap imageMap = Bitmap.createScaledBitmap(decodeBitmap(decodeBase64(i.getImageData())), 250, 250, false);
+            Bitmap imageMap = Bitmap.createScaledBitmap(Utility.decodeBitmap(Utility.decodeBase64(i.getImageData())), 250, 250, false);
             image.setImageBitmap(imageMap);
 
             truncatedDescription = i.getDescription();

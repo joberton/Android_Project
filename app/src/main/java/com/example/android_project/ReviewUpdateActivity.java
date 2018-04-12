@@ -61,12 +61,12 @@ public class ReviewUpdateActivity extends UtilityActivity {
                 reviewNameValue = getViewString(updateReviewName.getId()).trim();
                 reviewValue = getViewString(updateDescription.getId()).trim();
 
-                final boolean[] VALIDATION_CHECKS = {isNotBlank(reviewNameValue),
-                        isNotBlank(reviewValue)};
+                final boolean[] VALIDATION_CHECKS = {Utility.isNotBlank(reviewNameValue),
+                        Utility.isNotBlank(reviewValue)};
 
                 final EditText[] FORM_EDIT_TEXTS = {updateReviewName,updateDescription};
 
-                final List<EditText> FORM_ERRORS = formValidation(FORM_EDIT_TEXTS,VALIDATION_CHECKS,REVIEWS_ERROR_MESSAGES);
+                final List<EditText> FORM_ERRORS = Utility.formValidation(FORM_EDIT_TEXTS,VALIDATION_CHECKS,Utility.REVIEWS_ERROR_MESSAGES);
 
                 if(FORM_ERRORS.size() <= 0) {
                     new UpdateReviewTask().execute();

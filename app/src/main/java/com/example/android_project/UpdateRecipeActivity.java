@@ -80,16 +80,16 @@ public class UpdateRecipeActivity extends UtilityActivity {
                 drinkDescriptionValue = getViewString(drinkDescription.getId());
                 drinkInstructionsValue = getViewString(drinkInstructions.getId());
 
-                final boolean[] VALIDATION_CHECKS = {isNotBlank(drinkNameValue.trim()),
-                        isNotBlank(drinkDescriptionValue.trim()),
-                        isNotBlank(ingredientsDataValue.trim()),
-                        isNotBlank(drinkInstructionsValue.trim())};
+                final boolean[] VALIDATION_CHECKS = {Utility.isNotBlank(drinkNameValue.trim()),
+                        Utility.isNotBlank(drinkDescriptionValue.trim()),
+                        Utility.isNotBlank(ingredientsDataValue.trim()),
+                        Utility.isNotBlank(drinkInstructionsValue.trim())};
 
                 final EditText[] FORM_EDIT_TEXTS = {drinkName,ingredientsData,drinkDescription,drinkInstructions};
 
-                final boolean IMAGE_DATA_UPLOADED = isNotBlank(imageData);
+                final boolean IMAGE_DATA_UPLOADED = Utility.isNotBlank(imageData);
 
-                final List<EditText> FORM_ERRORS = formValidation(FORM_EDIT_TEXTS,VALIDATION_CHECKS,RECIPES_ERROR_MESSAGES);
+                final List<EditText> FORM_ERRORS = Utility.formValidation(FORM_EDIT_TEXTS,VALIDATION_CHECKS,Utility.RECIPES_ERROR_MESSAGES);
 
                 if(view == update && FORM_ERRORS.size() <= 0 && IMAGE_DATA_UPLOADED)
                 {
@@ -106,8 +106,8 @@ public class UpdateRecipeActivity extends UtilityActivity {
             }
         };
 
-        imageMap = decodeBitmap(data.getByteArrayExtra("imageData"));
-        imageData = encodeToBase64(imageMap);
+        imageMap = Utility.decodeBitmap(data.getByteArrayExtra("imageData"));
+        imageData = Utility.encodeToBase64(imageMap);
 
         drinkImage.setImageBitmap(imageMap);
 
@@ -121,7 +121,7 @@ public class UpdateRecipeActivity extends UtilityActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         imageData = onImageGalleryResult(requestCode,data);
-        drinkImage.setImageBitmap(decodeBitmap(decodeBase64(imageData)));
+        drinkImage.setImageBitmap(Utility.decodeBitmap(Utility.decodeBase64(imageData)));
     }
 
     @Override

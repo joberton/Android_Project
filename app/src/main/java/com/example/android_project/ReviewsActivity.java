@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +20,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class ReviewsActivity extends UtilityActivity {
+public class ReviewsActivity extends AppCompatActivity {
 
     private AppDatabase db;
     private SharedPreferences sharedPreferences;
@@ -81,16 +82,16 @@ public class ReviewsActivity extends UtilityActivity {
             favorites.addAll(db.favoriteDao().findAllReviewsByRecipe(data.getIntExtra("recipeId",0)));
             switch(sortCode)
             {
-                case SORT_BY_DATE:
+                case Utility.SORT_BY_DATE:
                     Collections.sort(favorites);
-                    reverseList(favorites,sortCode);
+                    Utility.reverseList(favorites,sortCode);
                     break;
-                case SORT_BY_NAME:
+                case Utility.SORT_BY_NAME:
                     Collections.sort(favorites,Favorite.Comparators.REVIEW_NAME);
                     break;
-                case SORT_BY_RATING:
+                case Utility.SORT_BY_RATING:
                     Collections.sort(favorites,Favorite.Comparators.RATING);
-                    reverseList(favorites,sortCode);
+                    Utility.reverseList(favorites,sortCode);
                     break;
             }
             return null;

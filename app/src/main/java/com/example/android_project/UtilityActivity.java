@@ -26,75 +26,12 @@ public class UtilityActivity extends AppCompatActivity {
 
     //global utility functions for the application go here...
     //such as parsing data
-    public final String[] RECIPES_ERROR_MESSAGES = {"Please provide a name for your recipe",
-                                                    "Please provide a description of your recipe",
-                                                    "Please provide ingredients for your recipe",
-                                                    "Please provide instructions for your recipe"};
-
-    public final String[] REVIEWS_ERROR_MESSAGES = {"Please provide a name for your review",
-                                                     "Please provide a description for your review"};
 
     public final int REQUEST_IMAGE = 1;
-
-    public final int NO_SORT = 0;
-    public final int SORT_BY_DATE = 1;
-    public final int SORT_BY_NAME = 2;
-    public final int SORT_BY_RATING = 3;
-
-    public void checkForTls()
-    {
-        ProviderInstaller.installIfNeededAsync(this, new ProviderInstaller.ProviderInstallListener() {
-            @Override
-            public void onProviderInstalled() {
-                Log.i("ProviderInstall_success","Update installed successfully");
-            }
-
-            @Override
-            public void onProviderInstallFailed(int i, Intent intent) {
-                Log.d("ProviderInstall_failure", "An Error was encountered while requesting provider installer ");
-            }
-        });
-    }
-
-    public boolean checkForWifiConnection()
-    {
-        ConnectivityManager cm = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeWork = cm.getActiveNetworkInfo();
-        return activeWork != null && activeWork.isConnectedOrConnecting();
-    }
-
-    public List<EditText> formValidation(final EditText[] FORM_EDIT_TEXTS, final boolean[] VALIDATION_CHECKS,final String[] ERROR_MESSAGES)
-    {
-        List<EditText> formErrors = new ArrayList<>();
-        for(int i = 0; i < VALIDATION_CHECKS.length; i++)
-        {
-            if(!VALIDATION_CHECKS[i])
-            {
-                FORM_EDIT_TEXTS[i].setHintTextColor(Color.RED);
-                FORM_EDIT_TEXTS[i].setHint(ERROR_MESSAGES[i]);
-                formErrors.add(FORM_EDIT_TEXTS[i]);
-            }
-        }
-        return formErrors;
-    }
-
-    public List reverseList(List listToReverse,int sortCode)
-    {
-        if(sortCode != NO_SORT)
-        {
-            Collections.reverse(listToReverse);
-        }
-        return listToReverse;
-    }
 
     public Context getThemedContext()
     {
         return getSupportActionBar().getThemedContext();
-    }
-
-    public boolean isNotBlank(String data)
-    {
-        return data != null && !data.isEmpty();
     }
 
     public double parseDoubleData(int id)
@@ -128,23 +65,6 @@ public class UtilityActivity extends AppCompatActivity {
         return imageData;
     }
 
-    public String encodeToBase64(Bitmap imageData)
-    {
-        ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
-        imageData.compress(Bitmap.CompressFormat.JPEG, 100, byteStream);
-        return Base64.encodeToString(byteStream.toByteArray(), Base64.DEFAULT);
-    }
-
-    public byte[] decodeBase64(String base64Data)
-    {
-        return Base64.decode(base64Data,Base64.DEFAULT);
-    }
-
-    public Bitmap decodeBitmap(byte[] byteData)
-    {
-        return BitmapFactory.decodeByteArray(byteData,0,byteData.length);
-    }
-
     public void requestImageFromGallery()
     {
         Intent imageIntent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -157,7 +77,7 @@ public class UtilityActivity extends AppCompatActivity {
         String base64ImageData = "";
         if(requestCode == REQUEST_IMAGE && data != null) {
             Bitmap imageMap = getContentUriBitMap(data.getData());
-            base64ImageData = encodeToBase64(imageMap);
+            base64ImageData = Utility.encodeToBase64(imageMap);
         }
         return base64ImageData;
     }

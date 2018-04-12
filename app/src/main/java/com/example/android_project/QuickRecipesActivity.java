@@ -9,6 +9,7 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -49,16 +50,13 @@ import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.TlsVersion;
 
-public class QuickRecipesActivity extends UtilityActivity {
+public class QuickRecipesActivity extends AppCompatActivity {
 
     private SharedPreferences sharedPreferences;
 
-    private static final int DRINK_REQUEST_LIMIT = 15;
+    private static final int DRINK_REQUEST_LIMIT = 10;
     private static final int INSTRUCTIONS_MAX_LIMIT = 35;
 
-    //test apis
-    //https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=13060
-    //https://swapi.co/api/people/1/
     private static final String BASE_URL = "https://www.thecocktaildb.com/api/json/v1/1/";
 
     private boolean wifiConnection;
@@ -84,7 +82,7 @@ public class QuickRecipesActivity extends UtilityActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quick_recipes);
 
-        wifiConnection = checkForWifiConnection();
+        wifiConnection = Utility.checkForWifiConnection(this);
 
         urlBuilder = HttpRequestHelper.buildHttpUrl(BASE_URL + "filter.php?a=Alcoholic");
         request = HttpRequestHelper.buildNewHttpRequester(urlBuilder);
@@ -99,12 +97,12 @@ public class QuickRecipesActivity extends UtilityActivity {
                 QuickRecipe quickRecipe = (QuickRecipe) adapterView.getItemAtPosition(i);
                 Intent data = new Intent(getApplicationContext(),QuickRecipesDetailsActivity.class);
 
-                String base64Data = encodeToBase64(quickRecipe.getImageData());
+                String base64Data = Utility.encodeToBase64(quickRecipe.getImageData());
 
                 data.putExtra("drinkName", quickRecipe.getDrinkName());
                 data.putExtra("drinkDateCreated", quickRecipe.getDateCreated().toString());
                 data.putExtra("drinkInstructions",quickRecipe.getDrinkInstructions());
-                data.putExtra("imageData", decodeBase64(base64Data));
+                data.putExtra("imageData", Utility.decodeBase64(base64Data));
 
                 startActivity(data);
             }

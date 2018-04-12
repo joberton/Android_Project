@@ -10,7 +10,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class QuickRecipesDetailsActivity extends UtilityActivity {
+public class QuickRecipesDetailsActivity extends AppCompatActivity {
 
     private SharedPreferences sharedPreferences;
     private Intent data;
@@ -41,7 +41,7 @@ public class QuickRecipesDetailsActivity extends UtilityActivity {
     protected void onStart() {
         super.onStart();
 
-        apiDrinkImage.setImageBitmap(decodeBitmap(data.getByteArrayExtra("imageData")));
+        apiDrinkImage.setImageBitmap(Utility.decodeBitmap(data.getByteArrayExtra("imageData")));
         apiDrinkName.setText(data.getStringExtra("drinkName"));
         apiDrinkCreated.setText(data.getStringExtra("drinkDateCreated"));
         apiDrinkInstructions.setText(data.getStringExtra("drinkInstructions"));

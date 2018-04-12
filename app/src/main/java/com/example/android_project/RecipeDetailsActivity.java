@@ -4,13 +4,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class RecipeDetailsActivity extends UtilityActivity {
+public class RecipeDetailsActivity extends AppCompatActivity {
 
     private AppDatabase db;
     private SharedPreferences sharedPreferences;
@@ -46,7 +47,7 @@ public class RecipeDetailsActivity extends UtilityActivity {
     protected void onStart() {
         super.onStart();
 
-        detailsImage.setImageBitmap(decodeBitmap(data.getByteArrayExtra("imageData")));
+        detailsImage.setImageBitmap(Utility.decodeBitmap(data.getByteArrayExtra("imageData")));
 
         name.setText(data.getStringExtra("name"));
         description.setText(data.getStringExtra("description"));
