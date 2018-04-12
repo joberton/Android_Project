@@ -4,4 +4,6 @@
     <item android:id="@+id/allReviews" android:title="@string/checkReviews"/>
     <item android:id="@+id/updateRecipe" android:title="@string/updateView"/>
     <item android:id="@+id/deleteRecipe" android:title="@string/deleteView"/>
+    <item android:id="@+id/recipesToGo" android:title="@string/quickRecipes"/>
+    <item android:id="@+id/settings" android:title="@string/applicationSettings"/>
 </menu>

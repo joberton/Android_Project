@@ -20,7 +20,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class ReviewsActivity extends AppCompatActivity {
+public class ReviewsActivity extends UtilityActivity {
 
     private AppDatabase db;
     private SharedPreferences sharedPreferences;

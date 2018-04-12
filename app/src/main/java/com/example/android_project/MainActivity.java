@@ -19,8 +19,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.google.android.gms.security.ProviderInstaller;
-
 import java.util.ArrayList;
 import java.util.Collections;
 

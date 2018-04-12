@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <!--<item android:id="@+id/settings" android:title="@string/applicationSettings" />-->
     <item android:id="@+id/updateReview" android:title="@string/updateReview"/>
     <item android:id="@+id/deleteReview" android:title="@string/deleteReview"/>
+    <item android:id="@+id/recipesToGo" android:title="@string/quickRecipes"/>
+    <item android:id="@+id/settings" android:title="@string/applicationSettings"/>
 </menu>
