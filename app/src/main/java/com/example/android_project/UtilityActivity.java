@@ -14,7 +14,6 @@ public class UtilityActivity extends AppCompatActivity {
 
     //global activity functions for the application go here...
     //such as parsing data
-
     public final int REQUEST_IMAGE = 1;
 
     public Context getThemedContext()

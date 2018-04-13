@@ -74,7 +74,7 @@ public class NewReviewActivity extends UtilityActivity {
                                             getViewString(newReview.getId()),
                                             Calendar.getInstance().getTime(),
                                             data.getIntExtra("id",0)));
-            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+            startActivity(new Intent(getApplicationContext(),MainActivity.class));
             finish();
             return null;
         }

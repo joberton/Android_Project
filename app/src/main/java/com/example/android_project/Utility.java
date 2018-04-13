@@ -33,8 +33,6 @@ public class Utility
     public static final String[] REVIEWS_ERROR_MESSAGES = {"Please provide a name for your review",
             "Please provide a description for your review"};
 
-    public static final int REQUEST_IMAGE = 1;
-
     public static final int NO_SORT = 0;
     public static final int SORT_BY_DATE = 1;
     public static final int SORT_BY_NAME = 2;

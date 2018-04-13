@@ -45,7 +45,7 @@ public abstract class AppDatabase extends RoomDatabase{
             @Override
             public void onOpen(@NonNull SupportSQLiteDatabase db) {
                 //using anonymous classes to avoid recursive database calls
-                // and then pre-populate the categories table
+                // and then I pre-populate the categories table
                 AsyncTask initialSetup = new AsyncTask<Object,Object,Object>()
                 {
                     @Override
