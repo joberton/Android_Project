@@ -10,7 +10,6 @@ import android.support.annotation.Nullable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -52,6 +51,7 @@ public class QuickRecipesActivity extends AppCompatActivity {
     private static final String BASE_URL = "https://www.thecocktaildb.com/api/json/v1/1/";
 
     private boolean wifiConnection;
+
     private HttpUrl.Builder urlBuilder;
     private OkHttpClient client = new OkHttpClient();
     private Request request;
@@ -165,14 +165,12 @@ public class QuickRecipesActivity extends AppCompatActivity {
         @NonNull
         @Override
         public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-            View view = convertView;
+
             TextView drinkName,drinkInstructions,dateCreated;
             ImageView apiImageView;
-            if(convertView == null)
-            {
-                LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                view = inflater.inflate(textViewResourceId,null);;
-            }
+
+            View view = Utility.inflateListViewItem(QuickRecipesActivity.this,convertView,textViewResourceId);
+
             QuickRecipe i = quickRecipeList.get(position);
 
             drinkName = view.findViewById(R.id.drinkApiName);

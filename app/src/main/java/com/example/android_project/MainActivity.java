@@ -8,7 +8,6 @@ import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -121,13 +120,9 @@ public class MainActivity extends UtilityActivity {
             TextView name,description,dateCreated;
             String truncatedDescription;
             ImageView image;
-            View view = convertView;
 
-            if(view == null)
-            {
-                LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                view = inflater.inflate(textViewResourceId,null);
-            }
+            View view = Utility.inflateListViewItem(MainActivity.this,convertView,textViewResourceId);
+
             Recipe i = recipes.get(position);
             image = view.findViewById(R.id.drinkImage);
             name = view.findViewById(R.id.name);

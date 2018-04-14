@@ -7,8 +7,6 @@ import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -113,14 +111,12 @@ public class ReviewsActivity extends UtilityActivity {
         @NonNull
         @Override
         public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-            View view = convertView;
+
             RatingBar reviewRating;
             TextView reviewName,reviewDateCreated;
-            if(view == null)
-            {
-                LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                view = inflater.inflate(textViewResourceId,null);
-            }
+
+            View view = Utility.inflateListViewItem(ReviewsActivity.this,convertView,textViewResourceId);
+
             Favorite i = favorites.get(position);
 
             reviewRating = view.findViewById(R.id.reviewRating);

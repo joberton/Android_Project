@@ -93,6 +93,17 @@ public class Utility
         return activeWork != null && activeWork.isConnectedOrConnecting();
     }
 
+    public static View inflateListViewItem(Context context, View view, int textViewResourceId)
+    {
+        View inflateView = view;
+        if(inflateView == null)
+        {
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            inflateView = inflater.inflate(textViewResourceId,null);
+        }
+        return inflateView;
+    }
+
     public static boolean isNotBlank(String data)
     {
         return data != null && !data.isEmpty();
