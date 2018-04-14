@@ -26,9 +26,11 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -45,6 +47,7 @@ public class QuickRecipesActivity extends AppCompatActivity {
 
     private static final int DRINK_REQUEST_LIMIT = 10;
     private static final int INSTRUCTIONS_MAX_LIMIT = 35;
+    private int sortCode;
 
     private static final String BASE_URL = "https://www.thecocktaildb.com/api/json/v1/1/";
 
@@ -67,6 +70,8 @@ public class QuickRecipesActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences("myPerfs",MODE_PRIVATE);
 
         setTheme(sharedPreferences.getInt("theme",R.style.DarkAppTheme));
+
+        sortCode = sharedPreferences.getInt("sortingCode",0);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quick_recipes);
@@ -121,6 +126,16 @@ public class QuickRecipesActivity extends AppCompatActivity {
                             public void run() {
                                 connectionStatus.setVisibility(View.GONE);
                                 progressBar.setVisibility(View.GONE);
+                                switch(sortCode)
+                                {
+                                    case Utility.SORT_BY_DATE:
+                                        Collections.sort(quickRecipeList);
+                                        Utility.reverseList(quickRecipeList,sortCode);
+                                        break;
+                                    case Utility.SORT_BY_NAME:
+                                        Collections.sort(quickRecipeList,QuickRecipe.Comparators.NAME);
+                                        break;
+                                }
                                 quickRecipeAdapter = new QuickRecipeAdapter(getApplicationContext(), R.layout.quick_recipes, quickRecipeList);
                                 historyList.setAdapter(quickRecipeAdapter);
                             }
@@ -157,7 +172,6 @@ public class QuickRecipesActivity extends AppCompatActivity {
             {
                 LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 view = inflater.inflate(textViewResourceId,null);;
-
             }
             QuickRecipe i = quickRecipeList.get(position);
 
@@ -168,7 +182,7 @@ public class QuickRecipesActivity extends AppCompatActivity {
 
             String truncatedInstructions = i.getDrinkInstructions();
 
-            apiImageView.setImageBitmap(Bitmap.createScaledBitmap(i.getImageData(),250,250,false));
+            apiImageView.setImageBitmap(i.getImageData());
             dateCreated.setText(getString(R.string.dateCreatedTextView).concat(i.getDateCreated().toString()));
             drinkName.setText(i.getDrinkName());
             drinkInstructions.setText(getString(R.string.instructionsTextView).concat(truncatedInstructions.length() < INSTRUCTIONS_MAX_LIMIT ? truncatedInstructions : truncatedInstructions.substring(0,INSTRUCTIONS_MAX_LIMIT) + "........"));
@@ -220,7 +234,8 @@ public class QuickRecipesActivity extends AppCompatActivity {
                     JSONObject drinkItem = new JSONObject(stringResponse);
 
                     URL imageUrl = new URL(getJsonDrinkKeyValue(drinkItem,"strDrinkThumb"));
-                    Bitmap imageData = BitmapFactory.decodeStream(imageUrl.openConnection().getInputStream());
+                    //resize the image to avoid running out of memory
+                    Bitmap imageData = Utility.resizeBitMap(BitmapFactory.decodeStream(getImageConnectionInputStream(imageUrl)),250,250);
 
                     String drinkName = getJsonDrinkKeyValue(drinkItem,"strDrink");
                     String drinkInstructions = getJsonDrinkKeyValue(drinkItem,"strInstructions");
@@ -242,7 +257,7 @@ public class QuickRecipesActivity extends AppCompatActivity {
             ArrayList<Request> drinkRequests = new ArrayList();
             try {
                 for (int i = 0; i < drinks.length() && i < DRINK_REQUEST_LIMIT; i++) {
-                    int randomDrink = (int) (Math.random() * drinks.length()) + 1;
+                    int randomDrink = (int) (Math.random() * drinks.length());
                     HttpUrl.Builder drinkUrlBuild = buildHttpUrl(BASE_URL + "lookup.php?i=" +
                             drinks.getJSONObject(randomDrink).getString("idDrink"));
                     drinkRequests.add(buildNewHttpRequester(drinkUrlBuild));
@@ -253,6 +268,20 @@ public class QuickRecipesActivity extends AppCompatActivity {
                 Log.e("Drink_Build_Failed",e.getMessage());
             }
             return drinkRequests;
+        }
+
+        private static InputStream getImageConnectionInputStream(URL imageUrl)
+        {
+            InputStream imageStream = null;
+            try
+            {
+                imageStream = imageUrl.openConnection().getInputStream();
+            }
+            catch(Exception e)
+            {
+                Log.e("Image_Stream_Error",e.getMessage());
+            }
+            return imageStream;
         }
 
         private static String getJsonDrinkKeyValue(JSONObject drinkItem,String value)

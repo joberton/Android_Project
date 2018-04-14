@@ -1,14 +1,16 @@
 package com.example.android_project;
 
 import android.graphics.Bitmap;
+import android.support.annotation.NonNull;
 
+import java.util.Comparator;
 import java.util.Date;
 
 /**
  * Created by johno on 4/5/2018.
  */
 
-public class QuickRecipe {
+public class QuickRecipe implements Comparable<QuickRecipe> {
 
     private String drinkName;
     private String drinkHistory;
@@ -61,5 +63,27 @@ public class QuickRecipe {
     public void setImageData(Bitmap imageData)
     {
         this.imageData = imageData;
+    }
+
+    @Override
+    public int compareTo(@NonNull QuickRecipe quickRecipe) {
+        return Comparators.DATE_CREATED.compare(this,quickRecipe);
+    }
+
+    public static class Comparators
+    {
+        public static Comparator<QuickRecipe> NAME =  new Comparator<QuickRecipe>() {
+            @Override
+            public int compare(QuickRecipe quickRecipe, QuickRecipe t1) {
+                return quickRecipe.getDrinkName().compareTo(t1.getDrinkName());
+            }
+        };
+
+        public static Comparator<QuickRecipe> DATE_CREATED = new Comparator<QuickRecipe>() {
+            @Override
+            public int compare(QuickRecipe quickRecipe, QuickRecipe t1) {
+                return quickRecipe.getDateCreated().compareTo(t1.getDateCreated());
+            }
+        };
     }
 }

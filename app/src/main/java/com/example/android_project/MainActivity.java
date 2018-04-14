@@ -47,6 +47,8 @@ public class MainActivity extends UtilityActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //replace androids default security provider with google's
+        //ensures that it can run on my phone
         Utility.checkForTls(this);
 
         db = AppDatabase.getDatabaseContext(this);
@@ -133,7 +135,7 @@ public class MainActivity extends UtilityActivity {
             dateCreated = view.findViewById(R.id.dateCreated);
 
 
-            Bitmap imageMap = Bitmap.createScaledBitmap(Utility.decodeBitmap(Utility.decodeBase64(i.getImageData())), 250, 250, false);
+            Bitmap imageMap = Utility.decodeBitmap(Utility.decodeBase64(i.getImageData()));
             image.setImageBitmap(imageMap);
 
             truncatedDescription = i.getDescription();

@@ -9,6 +9,9 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Base64;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 
 import com.google.android.gms.security.ProviderInstaller;
@@ -24,6 +27,7 @@ import java.util.List;
 
 public class Utility
 {
+    //global functions for the application go here...
 
     public static final String[] RECIPES_ERROR_MESSAGES = {"Please provide a name for your recipe",
             "Please provide a description of your recipe",
@@ -48,7 +52,7 @@ public class Utility
 
             @Override
             public void onProviderInstallFailed(int i, Intent intent) {
-                Log.d("ProviderInstall_failure", "An Error was encountered while requesting provider installer ");
+                Log.d("ProviderInstall_failure", "An Error was encountered while requesting install for the google provider");
             }
         });
     }
@@ -75,6 +79,11 @@ public class Utility
             }
         }
         return formErrors;
+    }
+
+    public static ArrayAdapter<CharSequence> createArrayAdapterFromResource(Context context,int arrayResourceId)
+    {
+        return ArrayAdapter.createFromResource(context,arrayResourceId,R.layout.support_simple_spinner_dropdown_item);
     }
 
     public static boolean checkForWifiConnection(Context context)
@@ -104,5 +113,10 @@ public class Utility
     public static Bitmap decodeBitmap(byte[] byteData)
     {
         return BitmapFactory.decodeByteArray(byteData,0,byteData.length);
+    }
+
+    public static Bitmap resizeBitMap(Bitmap imageBitmap,int width, int height)
+    {
+        return Bitmap.createScaledBitmap(imageBitmap, width, height,false);
     }
 }

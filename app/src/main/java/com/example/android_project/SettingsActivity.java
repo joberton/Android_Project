@@ -39,7 +39,7 @@ public class SettingsActivity extends AppCompatActivity {
         setTheme = findViewById(R.id.themeSetting);
         sortingOptions = findViewById(R.id.sortingSettings);
 
-        sortingAdapter = ArrayAdapter.createFromResource(this,R.array.sortingOptions,R.layout.support_simple_spinner_dropdown_item);
+        sortingAdapter = Utility.createArrayAdapterFromResource(this,R.array.sortingOptions);
     }
 
     @Override

@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
@@ -13,7 +14,6 @@ import android.widget.EditText;
 public class UtilityActivity extends AppCompatActivity {
 
     //global activity functions for the application go here...
-    //such as parsing data
     public final int REQUEST_IMAGE = 1;
 
     public Context getThemedContext()
@@ -47,7 +47,7 @@ public class UtilityActivity extends AppCompatActivity {
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            Log.e("Uri_Bitmap_Error",e.getMessage());
         }
         return imageData;
     }
@@ -63,7 +63,7 @@ public class UtilityActivity extends AppCompatActivity {
     {
         String base64ImageData = "";
         if(requestCode == REQUEST_IMAGE && data != null) {
-            Bitmap imageMap = getContentUriBitMap(data.getData());
+            Bitmap imageMap = Utility.resizeBitMap(getContentUriBitMap(data.getData()),250,250);
             base64ImageData = Utility.encodeToBase64(imageMap);
         }
         return base64ImageData;
